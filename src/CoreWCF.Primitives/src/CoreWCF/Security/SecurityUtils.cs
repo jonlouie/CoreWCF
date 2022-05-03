@@ -1667,6 +1667,21 @@ namespace CoreWCF.Security
 
             return false;
         }
+
+        internal static ServiceSecurityContext GetServiceSecurityContextFromWindowsIdentity(WindowsIdentity wid = null)
+        {
+            wid ??= WindowsIdentity.GetCurrent();
+            WindowsClaimSet windowsClaimSet = new WindowsClaimSet(wid);
+            UnconditionalPolicy authorizationPolicy = new UnconditionalPolicy(wid, windowsClaimSet);
+
+            ReadOnlyCollection<IAuthorizationPolicy> authorizationPolicies = new ReadOnlyCollection<IAuthorizationPolicy>(new List<IAuthorizationPolicy>
+            {
+                authorizationPolicy
+            });
+            ServiceSecurityContext windowsSecurityContext = new ServiceSecurityContext(authorizationPolicies);
+
+            return windowsSecurityContext;
+        }
     }
 
     internal static class EmptyReadOnlyCollection<T>
