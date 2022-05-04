@@ -329,14 +329,7 @@ namespace CoreWCF.Dispatcher
                 SecurityMessageProperty securityContextProperty = rpc.Request.Properties.Security;
                 if (securityContextProperty == null)
                 {
-                    if (rpc.Operation.Impersonation == ImpersonationOption.Required)
-                    {
-                        securityContext = SecurityUtils.GetServiceSecurityContextFromWindowsIdentity();
-                    }
-                    else
-                    {
-                        securityContext = null; // SecurityContext.Anonymous
-                    }
+                    securityContext = null; // SecurityContext.Anonymous
                 }
                 else
                 {
@@ -350,6 +343,7 @@ namespace CoreWCF.Dispatcher
                 rpc.SecurityContext = securityContext;
                 rpc.HasSecurityContext = true;
             }
+
             return securityContext;
         }
 
