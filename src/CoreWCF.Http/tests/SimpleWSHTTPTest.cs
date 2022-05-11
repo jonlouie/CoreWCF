@@ -13,6 +13,7 @@ using CoreWCF;
 using CoreWCF.Configuration;
 using CoreWCF.IdentityModel.Selectors;
 using Helpers;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -306,6 +307,8 @@ namespace WSHttp
             public void ConfigureServices(IServiceCollection services)
             {
                 services.AddServiceModelServices();
+                services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+                    .AddNegotiate();
             }
 
             public virtual void ChangeHostBehavior(ServiceHostBase host)

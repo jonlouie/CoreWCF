@@ -8,14 +8,14 @@ using CoreWCF.Security;
 
 namespace CoreWCF.IdentityModel.Tokens
 {
-    internal class GenericSecurityToken : SecurityToken
+    public class GenericSecurityToken : SecurityToken
     {
         private readonly string _id;
         private readonly DateTime _effectiveTime;
         private readonly DateTime _expirationTime;
         private readonly GenericIdentity _genericIdentity;
 
-        internal GenericSecurityToken(string name, string id)
+        public GenericSecurityToken(string name, string id)
         {
             Name = name ?? throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull(nameof(name));
             _id = id ?? throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull(nameof(id));

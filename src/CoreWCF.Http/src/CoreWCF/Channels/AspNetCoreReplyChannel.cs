@@ -120,6 +120,12 @@ namespace CoreWCF.Channels
             }
 
             var requestContext = HttpRequestContext.CreateContext(_httpSettings, context);
+            bool isAuthenticated = await requestContext.ProcessAuthenticationAsync();
+            if (!isAuthenticated)
+            {
+                // throw exception?
+            }
+            
             HttpInput httpInput = requestContext.GetHttpInput(true);
             (Message requestMessage, Exception requestException) = await httpInput.ParseIncomingMessageAsync();
             if ((requestMessage == null) && (requestException == null))

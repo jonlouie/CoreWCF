@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using CoreWCF.Configuration;
+using CoreWCF.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -170,6 +171,10 @@ namespace CoreWCF.Channels
                         if (requestHandler.WebSocketOptions != null)
                         {
                             wcfApp.UseWebSockets(requestHandler.WebSocketOptions);
+                        }
+                        if (SecurityUtils.ShouldUseAuthentication(dispatcher.Binding))
+                        {
+                            wcfApp.UseAuthentication();
                         }
                         wcfApp.Run(requestHandler.HandleRequest);
                     });

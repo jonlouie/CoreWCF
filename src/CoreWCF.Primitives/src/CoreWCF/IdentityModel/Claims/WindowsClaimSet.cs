@@ -11,7 +11,7 @@ using CoreWCF.Security;
 
 namespace CoreWCF.IdentityModel.Claims
 {
-    internal class WindowsClaimSet : ClaimSet, IIdentityInfo, IDisposable
+    public class WindowsClaimSet : ClaimSet, IIdentityInfo, IDisposable
     {
         internal const bool DefaultIncludeWindowsGroups = true;
         private readonly ClaimsIdentity _windowsIdentity;
@@ -80,7 +80,7 @@ namespace CoreWCF.IdentityModel.Claims
             _ldapSettings = ldapSettings;
         }
 
-       internal WindowsClaimSet(ClaimsIdentity claimsIdentity, bool includeWindowsGroups,  LdapSettings ldapSettings)
+       public WindowsClaimSet(ClaimsIdentity claimsIdentity, bool includeWindowsGroups,  LdapSettings ldapSettings)
         : this(claimsIdentity, null, includeWindowsGroups, DateTime.UtcNow.AddHours(10), false, null,ldapSettings)
         {
         }

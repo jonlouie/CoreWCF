@@ -2,15 +2,22 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Security.Authentication.ExtendedProtection;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using CoreWCF.IdentityModel;
+using CoreWCF.IdentityModel.Policy;
+using CoreWCF.IdentityModel.Selectors;
+using CoreWCF.IdentityModel.Tokens;
 using CoreWCF.Runtime;
 using CoreWCF.Security;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
 namespace CoreWCF.Channels
@@ -99,7 +106,7 @@ namespace CoreWCF.Channels
             return new AspNetCoreHttpContext(settings, httpContext);
         }
 
-        protected abstract SecurityMessageProperty OnProcessAuthentication();
+        protected abstract Task<SecurityMessageProperty> OnProcessAuthenticationAsync();
 
         public abstract HttpOutput GetHttpOutput(Message message);
 
@@ -252,14 +259,14 @@ namespace CoreWCF.Channels
         public async Task<bool> ProcessAuthenticationAsync()
         {
             HttpStatusCode statusCode = ValidateAuthentication();
-
+            
             if (statusCode == HttpStatusCode.OK)
             {
                 bool authenticationSucceeded = false;
                 statusCode = HttpStatusCode.Forbidden;
                 try
                 {
-                    _securityProperty = OnProcessAuthentication();
+                    _securityProperty = await OnProcessAuthenticationAsync();
                     authenticationSucceeded = true;
                     return true;
                 }
@@ -375,10 +382,34 @@ namespace CoreWCF.Channels
                 return HttpOutput.CreateHttpOutput(_aspNetContext, HttpTransportSettings, message, HttpMethod);
             }
 
-            protected override SecurityMessageProperty OnProcessAuthentication()
+            protected override async Task<SecurityMessageProperty> OnProcessAuthenticationAsync()
             {
-                // TODO: Wire up authentication for ASP.Net Core
-                //return Listener.ProcessAuthentication(listenerContext);
+                if (HttpTransportSettings.IsAuthenticationRequired)
+                {
+                    AuthenticateResult authenticateResult = _aspNetContext.GetAuthenticateResult();
+                    if (authenticateResult == null)
+                    {
+                        // No authentication occurred
+                        return null;
+                    }
+
+                    if (authenticateResult.None)
+                    {
+                        throw new Exception("The request requires authentication, but the user was not authenticated.");
+                    }
+                    else
+                    {
+                        ServiceSecurityContext securityContext = await CreateSecurityContextAsync(HttpTransportSettings, authenticateResult);
+                        SecurityMessageProperty securityMessageProperty = new SecurityMessageProperty
+                        {
+                            ServiceSecurityContext = securityContext
+                        };
+                        return securityMessageProperty;
+                    }
+                }
+
+                // Authentication is required but we were unable to authenticate.
+                // Should we throw instead?
                 return null;
             }
 
@@ -409,6 +440,30 @@ namespace CoreWCF.Channels
                 //    throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(
                 //        HttpChannelUtilities.CreateCommunicationException(listenerException));
                 //}
+            }
+
+            private async Task<ServiceSecurityContext> CreateSecurityContextAsync(IHttpTransportFactorySettings httpTransportFactorySettings, AuthenticateResult authenticateResult)
+            {
+                if (httpTransportFactorySettings is HttpTransportSettings httpTransportSettings
+                    && (httpTransportSettings.SecurityMode == SecurityMode.Transport || httpTransportSettings.SecurityMode == SecurityMode.TransportWithMessageCredential)
+                    && httpTransportSettings.ClientCredentialType == HttpClientCredentialType.Windows)
+                {
+                    if (authenticateResult.Principal?.Identity is WindowsIdentity wid)
+                    {
+                        WindowsSecurityTokenAuthenticator tokenAuthenticator = new WindowsSecurityTokenAuthenticator();
+                        SecurityToken windowsToken = new WindowsSecurityToken(wid);
+                        ReadOnlyCollection<IAuthorizationPolicy> authorizationPolicies = await tokenAuthenticator.ValidateTokenAsync(windowsToken);
+                        return new ServiceSecurityContext(authorizationPolicies);
+                    }
+                    else if (authenticateResult.Principal?.Identity is GenericIdentity gid)
+                    {
+                        WindowsSecurityTokenAuthenticator tokenAuthenticator = new WindowsSecurityTokenAuthenticator();
+                        SecurityToken genericToken = new GenericSecurityToken(gid.Name, SecurityUniqueId.Create().Value);
+                        ReadOnlyCollection<IAuthorizationPolicy> authorizationPolicies = await tokenAuthenticator.ValidateTokenAsync(genericToken);
+                        return new ServiceSecurityContext(authorizationPolicies);
+                    }
+                }
+                return null;
             }
 
             private class AspNetCoreHttpInput : HttpInput

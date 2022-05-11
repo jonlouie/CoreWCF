@@ -25,5 +25,7 @@ namespace CoreWCF.Channels
         public AuthenticationSchemes AuthenticationScheme { get; set; }
         public bool IsAuthenticationRequired => AuthenticationScheme.IsNotSet(AuthenticationSchemes.Anonymous);
         public bool IsAuthenticationSupported => AuthenticationScheme != AuthenticationSchemes.Anonymous;
+        public SecurityMode SecurityMode { get; set; }
+        public HttpClientCredentialType ClientCredentialType { get; set; }
     }
 }

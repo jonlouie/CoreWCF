@@ -15,7 +15,7 @@ namespace CoreWCF.IdentityModel.Policy
         IIdentity Identity { get; }
     }
 
-    internal class UnconditionalPolicy : IAuthorizationPolicy, IDisposable
+    public class UnconditionalPolicy : IAuthorizationPolicy, IDisposable
     {
         private SecurityUniqueId _id;
         private ClaimSet _issuance;
@@ -48,7 +48,7 @@ namespace CoreWCF.IdentityModel.Policy
             Initialize(ClaimSet.System, null, issuances, expirationTime);
         }
 
-        internal UnconditionalPolicy(IIdentity primaryIdentity, ClaimSet issuance)
+        public UnconditionalPolicy(IIdentity primaryIdentity, ClaimSet issuance)
             : this(issuance)
         {
             _primaryIdentity = primaryIdentity;
