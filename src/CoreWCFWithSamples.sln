@@ -54,11 +54,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHttp", "Samples\WebHttp\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWCF.WebHttp.Tests", "CoreWCF.WebHttp\tests\CoreWCF.WebHttp.Tests.csproj", "{A4EAC4AF-BDC8-4BC4-88DA-CA83B702CABE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "Samples\Benchmarks\Benchmarks.csproj", "{3C57789D-F9E3-433F-BFAF-E54D2FECF39C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.CoreWCF.Dev", "Samples\Benchmarks.CoreWCF.Dev\Benchmarks.CoreWCF.Dev.csproj", "{3C57789D-F9E3-433F-BFAF-E54D2FECF39C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.Common", "Samples\Benchmarks.Common\Benchmarks.Common.csproj", "{9C815772-E23E-4339-89EC-463554F3733E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.CoreWCF", "Samples\Benchmarks.CoreWCF\Benchmarks.CoreWCF.csproj", "{1EB0D13E-9D80-46C5-B050-00FA7F93D309}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.CoreWCF.Release", "Samples\Benchmarks.CoreWCF.Release\Benchmarks.CoreWCF.Release.csproj", "{1EB0D13E-9D80-46C5-B050-00FA7F93D309}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.WCF", "samples\Benchmarks.WCF\Benchmarks.WCF.csproj", "{A366970F-3BA0-4464-91E7-88D07D8CDDCC}"
 EndProject

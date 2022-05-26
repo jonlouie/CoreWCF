@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
-using System.ServiceModel;
 using Benchmarks.Common.DataContract;
+using CoreWCF;
 
-namespace Benchmarks.ClientContract
+namespace Benchmarks.CoreWCF.Dev.ServiceContract
 {
     internal static class Constants
     {

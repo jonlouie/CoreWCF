@@ -7,16 +7,16 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using Benchmarks.Common.DataContract;
 using Benchmarks.Common.Helpers;
+using Benchmarks.CoreWCF.Dev.Helpers;
 using Benchmarks.CoreWCF.Helpers;
-using CoreWCF;
 using CoreWCF.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Benchmarks.CoreWCF
+namespace Benchmarks.CoreWCF.Dev
 {
-    //[SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
+    [SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
     public class HttpBindingBenchmarks
     {
         private readonly IEnumerable<SampleData> _dataList1 = DataGenerator.GenerateRecords(1);
@@ -25,19 +25,19 @@ namespace Benchmarks.CoreWCF
         private IWebHost _host;
         private ClientContract.IEchoService _channel;
 
-        //[GlobalSetup]
+        [GlobalSetup]
         public void HttpBindingGlobalSetup()
         {
             _host = ServiceHelper.CreateWebHostBuilder<Startup>().Build();
             _host.Start();
-            var httpBinding = ClientHelper.GetBufferedModeBinding();
+            var httpBinding = ClientBindingFactory.GetStandardBasicHttpBinding();
             var factory = new System.ServiceModel.ChannelFactory<ClientContract.IEchoService>(httpBinding,
                 new System.ServiceModel.EndpointAddress(new Uri("http://localhost:8080/BasicWcfService/basichttp.svc")));
             _channel = factory.CreateChannel();
             ((System.ServiceModel.Channels.IChannel)_channel).Open();
         }
 
-        //[GlobalCleanup]
+        [GlobalCleanup]
         public void HttpBindingGlobalCleanup()
         {
             ((System.ServiceModel.Channels.IChannel)_channel).Close();
@@ -58,7 +58,7 @@ namespace Benchmarks.CoreWCF
             var result = _channel.EchoSampleData(_dataList100);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void HttpBindingEchoSampleData1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
@@ -117,10 +117,11 @@ namespace Benchmarks.CoreWCF
 
             public void Configure(IApplicationBuilder app)
             {
+                var binding = ServiceBindingFactory.GetStandardBasicHttpBinding();
                 app.UseServiceModel(builder =>
                 {
                     builder.AddService<Services.EchoService>();
-                    builder.AddServiceEndpoint<Services.EchoService, ServiceContract.IEchoService>(new BasicHttpBinding(), "/BasicWcfService/basichttp.svc");
+                    builder.AddServiceEndpoint<Services.EchoService, ServiceContract.IEchoService>(binding, "/BasicWcfService/basichttp.svc");
                 });
             }
         }

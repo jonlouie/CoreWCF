@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Benchmarks.Common.DataContract;
 using CoreWCF;
 
-namespace Benchmarks.ServiceContract
+namespace Benchmarks.CoreWCF.Release.ServiceContract
 {
     internal static class Constants
     {

@@ -6,7 +6,7 @@ using Benchmarks.Common.Helpers;
 using Benchmarks.Common.DataContract;
 using CoreWCF;
 
-namespace Benchmarks.Services
+namespace Benchmarks.CoreWCF.Dev.Services
 {
     [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class EchoService : ServiceContract.IEchoService
