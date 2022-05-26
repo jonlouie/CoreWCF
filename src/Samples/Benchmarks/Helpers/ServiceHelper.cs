@@ -13,7 +13,7 @@ using System.Security.Authentication;
 #endif // NET472
 using System.Security.Cryptography.X509Certificates;
 
-namespace Benchmarks.CoreWCF.Helpers
+namespace Benchmarks.Helpers
 {
     public static class ServiceHelper
     {

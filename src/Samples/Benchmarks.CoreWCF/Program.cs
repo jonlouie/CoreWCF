@@ -11,8 +11,11 @@ namespace Benchmarks
 
 
             var httpBindingBenchmarks = new HttpBindingBenchmarks();
-            httpBindingBenchmarks.BasicHttpRequestReplyEchoString();
-            httpBindingBenchmarks.HttpBindingEchoSampleData1();
+            httpBindingBenchmarks.HttpBindingGlobalSetup();
+            //httpBindingBenchmarks.HttpBindingEchoSampleData1000();
+            //httpBindingBenchmarks.HttpBindingReceiveSampleData1000();
+            httpBindingBenchmarks.HttpBindingSendSampleData1000();
+            httpBindingBenchmarks.HttpBindingGlobalCleanup();
         }
     }
 }

@@ -284,4 +284,5 @@ nbgv.exe
 # JetBrains Rider settings
 .idea
 
-
+# BenchmarkDotNet results
+BenchmarkDotNet.Artifacts/

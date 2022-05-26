@@ -1,10 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using CoreWCF;
-using CoreWCF.Channels;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+//using Microsoft.AspNetCore;
+//using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -13,7 +13,7 @@ using System.Security.Authentication;
 #endif // NET472
 using System.Security.Cryptography.X509Certificates;
 
-namespace Benchmarks.Http.Helpers
+namespace Benchmarks.WCF.Helpers
 {
     public static class ServiceHelper
     {
@@ -37,53 +37,56 @@ namespace Benchmarks.Http.Helpers
             };
         }
         
-        public static IWebHostBuilder CreateWebHostBuilder<TStartup>() where TStartup : class =>
-            WebHost.CreateDefaultBuilder(Array.Empty<string>())
-                .UseKestrel(options =>
-                {
-                    options.AllowSynchronousIO = true;
-                    options.Listen(IPAddress.Loopback, 8080, listenOptions =>
-                    {
-                        if (Debugger.IsAttached)
-                        {
-                            listenOptions.UseConnectionLogging();
-                        }
-                    });
-                })
-                .UseStartup<TStartup>();
+    //    public static IWebHostBuilder CreateWebHostBuilder<TStartup>() where TStartup : class =>
+    //        WebHost.CreateDefaultBuilder(Array.Empty<string>())
+    //            .UseKestrel(options =>
+    //            {
+    //                options.Limits.MaxRequestBufferSize = null;
+    //                options.Limits.MaxRequestBodySize = null;
+    //                options.Limits.MaxResponseBufferSize = null;
+    //                options.AllowSynchronousIO = true;
+    //                options.Listen(IPAddress.Loopback, 8080, listenOptions =>
+    //                {
+    //                    if (Debugger.IsAttached)
+    //                    {
+    //                        listenOptions.UseConnectionLogging();
+    //                    }
+    //                });
+    //            })
+    //            .UseStartup<TStartup>();
         
-        public static IWebHostBuilder CreateHttpsWebHostBuilder<TStartup>() where TStartup : class =>
-            WebHost.CreateDefaultBuilder(Array.Empty<string>())
-                .UseKestrel(options =>
-                {
-                    options.Listen(address: IPAddress.Loopback, 8444, listenOptions =>
-                    {
-                        listenOptions.UseHttps(httpsOptions =>
-                        {
-    #if NET472
-                            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls;
-    #endif // NET472
-                        });
-                        if (Debugger.IsAttached)
-                        {
-                            listenOptions.UseConnectionLogging();
-                        }
-                    });
-                    options.Listen(address: IPAddress.Any, 8443, listenOptions =>
-                    {
-                        listenOptions.UseHttps(httpsOptions =>
-                        {
-    #if NET472
-                            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls;
-    #endif // NET472
-                        });
-                        if (Debugger.IsAttached)
-                        {
-                            listenOptions.UseConnectionLogging();
-                        }
-                    });
-                })
-                .UseStartup<TStartup>();
+    //    public static IWebHostBuilder CreateHttpsWebHostBuilder<TStartup>() where TStartup : class =>
+    //        WebHost.CreateDefaultBuilder(Array.Empty<string>())
+    //            .UseKestrel(options =>
+    //            {
+    //                options.Listen(address: IPAddress.Loopback, 8444, listenOptions =>
+    //                {
+    //                    listenOptions.UseHttps(httpsOptions =>
+    //                    {
+    //#if NET472
+    //                        httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls;
+    //#endif // NET472
+    //                    });
+    //                    if (Debugger.IsAttached)
+    //                    {
+    //                        listenOptions.UseConnectionLogging();
+    //                    }
+    //                });
+    //                options.Listen(address: IPAddress.Any, 8443, listenOptions =>
+    //                {
+    //                    listenOptions.UseHttps(httpsOptions =>
+    //                    {
+    //#if NET472
+    //                        httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls;
+    //#endif // NET472
+    //                    });
+    //                    if (Debugger.IsAttached)
+    //                    {
+    //                        listenOptions.UseConnectionLogging();
+    //                    }
+    //                });
+    //            })
+    //            .UseStartup<TStartup>();
 
         //only for test, don't use in production code
         public static X509Certificate2 GetServiceCertificate()

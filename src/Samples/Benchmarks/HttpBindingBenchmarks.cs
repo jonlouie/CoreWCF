@@ -7,14 +7,14 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using Benchmarks.Common.DataContract;
 using Benchmarks.Common.Helpers;
-using Benchmarks.CoreWCF.Helpers;
+using Benchmarks.Helpers;
 using CoreWCF;
 using CoreWCF.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Benchmarks.CoreWCF
+namespace Benchmarks
 {
     //[SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
     public class HttpBindingBenchmarks
@@ -79,7 +79,7 @@ namespace Benchmarks.CoreWCF
             var result = _channel.ReceiveSampleData(100);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void HttpBindingReceiveSampleData1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
@@ -100,7 +100,7 @@ namespace Benchmarks.CoreWCF
             var result = _channel.SendSampleData(_dataList100);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void HttpBindingSendSampleData1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution

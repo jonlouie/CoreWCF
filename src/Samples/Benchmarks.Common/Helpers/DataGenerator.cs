@@ -24,7 +24,8 @@ namespace Benchmarks.Common.Helpers
                     Guid = Guid.NewGuid().ToString(),
                     Id = i,
                     Flag = true,
-                    Message = new string('a', 10)
+                    //Message = new string('a', 10)
+                    Message = new string('a', 3)
                 });
             }
 

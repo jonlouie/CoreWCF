@@ -9,7 +9,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Text;
 
-namespace Benchmarks.Http.Helpers
+namespace Benchmarks.WCF.Helpers
 {
     public static class ClientHelper
     {
@@ -38,28 +38,28 @@ namespace Benchmarks.Http.Helpers
         public static BasicHttpBinding GetBufferedModeBinding()
         {
             var binding = new BasicHttpBinding();
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
         public static BasicHttpBinding GetBufferedModeBinding(BasicHttpSecurityMode mode)
         {
             var binding = new BasicHttpBinding(mode);
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
         public static WSHttpBinding GetBufferedModeWSHttpBinding(SecurityMode securityMode)
         {
             var binding = new WSHttpBinding(securityMode);
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
         public static BasicHttpsBinding GetBufferedModeHttpsBinding()
         {
             var binding = new BasicHttpsBinding();
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
@@ -69,7 +69,7 @@ namespace Benchmarks.Http.Helpers
             {
                 TransferMode = TransferMode.Streamed
             };
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
@@ -77,7 +77,7 @@ namespace Benchmarks.Http.Helpers
         {
             var binding = new NetHttpBinding();
             binding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Always;
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
@@ -88,71 +88,68 @@ namespace Benchmarks.Http.Helpers
                 TransferMode = TransferMode.Streamed
             };
             binding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Always;
-            ApplyDebugTimeouts(binding);
+            ApplyBenchmarkTimeouts(binding);
             return binding;
         }
 
-        private static void ApplyDebugTimeouts(Binding binding)
+        private static void ApplyBenchmarkTimeouts(Binding binding)
         {
-            if (Debugger.IsAttached)
-            {
-                binding.OpenTimeout =
-                    binding.CloseTimeout =
-                    binding.SendTimeout =
-                    binding.ReceiveTimeout = s_debugTimeout;
-            }
+            binding.OpenTimeout =
+                binding.CloseTimeout =
+                binding.SendTimeout =
+                binding.ReceiveTimeout = s_debugTimeout;
         }
 
-        public class NoneSerializableStream : MemoryStream
-        {
-        }
+//        public class NoneSerializableStream : MemoryStream
+//        {
+//        }
 
-        public static void PopulateStreamWithStringBytes(Stream stream, string str)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(str);
-            byte[] array = bytes;
-            for (int i = 0; i < array.Length; i++)
-            {
-                byte value = array[i];
-                stream.WriteByte(value);
-            }
+//        public static void PopulateStreamWithStringBytes(Stream stream, string str)
+//        {
+//            byte[] bytes = Encoding.UTF8.GetBytes(str);
+//            byte[] array = bytes;
+//            for (int i = 0; i < array.Length; i++)
+//            {
+//                byte value = array[i];
+//                stream.WriteByte(value);
+//            }
 
-            stream.Position = 0L;
-        }
+//            stream.Position = 0L;
+//        }
 
-        public static Stream GetStreamWithStringBytes(string s)
-        {
-            Stream stream = new NoneSerializableStream();
-            PopulateStreamWithStringBytes(stream, s);
-            return stream;
-        }
+//        public static Stream GetStreamWithStringBytes(string s)
+//        {
+//            Stream stream = new NoneSerializableStream();
+//            PopulateStreamWithStringBytes(stream, s);
+//            return stream;
+//        }
 
-        public static string GetStringFrom(Stream s)
-        {
-            StreamReader streamReader = new StreamReader(s, Encoding.UTF8);
-            return streamReader.ReadToEnd();
-        }
+//        public static string GetStringFrom(Stream s)
+//        {
+//            StreamReader streamReader = new StreamReader(s, Encoding.UTF8);
+//            return streamReader.ReadToEnd();
+//        }
 
-        public static byte[] GetByteArray(int length)
-        {
-            byte[] bytes = new byte[length];
-#if NET472_OR_GREATER
-                using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-                {
-                    rng.GetBytes(bytes);
-                }
-#else
-            RandomNumberGenerator.Fill(bytes);
-#endif
-            return bytes;
-        }
+//        public static byte[] GetByteArray(int length)
+//        {
+//            byte[] bytes = new byte[length];
+//#if NET472_OR_GREATER
+//                using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+//                {
+//                    rng.GetBytes(bytes);
+//                }
+//#else
+//            RandomNumberGenerator.Fill(bytes);
+//#endif
+//            return bytes;
+//        }
 
-        public static T GetProxy<T>()
-        {
-            BasicHttpBinding httpBinding = GetBufferedModeBinding();
-            ChannelFactory<T> channelFactory = new ChannelFactory<T>(httpBinding, new EndpointAddress(new Uri("http://localhost:8080/BasicWcfService/basichttp.svc")));
-            T proxy = channelFactory.CreateChannel();
-            return proxy;
-        }
+//        public static T GetProxy<T>()
+//        {
+//            BasicHttpBinding httpBinding = GetBufferedModeBinding();
+//            ChannelFactory<T> channelFactory = new ChannelFactory<T>(httpBinding, new EndpointAddress(new Uri("http://localhost:8080/BasicWcfService/basichttp.svc")));
+//            T proxy = channelFactory.CreateChannel();
+//            return proxy;
+//        }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BenchmarkDotNet.Running;
 
 namespace Benchmarks.WCF
 {
@@ -10,6 +6,13 @@ namespace Benchmarks.WCF
     {
         static void Main(string[] args)
         {
+            //var summary = BenchmarkRunner.Run(typeof(Program).Assembly);
+
+
+            var httpBindingBenchmarks = new HttpBindingBenchmarks();
+            httpBindingBenchmarks.HttpBindingGlobalSetup();
+            httpBindingBenchmarks.HttpBindingEchoSampleData1000();
+            httpBindingBenchmarks.HttpBindingGlobalCleanup();
         }
     }
 }

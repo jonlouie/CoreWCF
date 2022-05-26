@@ -14,17 +14,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="3.1.18" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.8.1" />
-    <!--<PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />-->
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <!--<ProjectReference Include="..\..\CoreWCF.Http\src\CoreWCF.Http.csproj" />-->
-    <!--<ProjectReference Include="..\..\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />-->
     <!--<ProjectReference Include="..\..\CoreWCF.Primitives\src\CoreWCF.Primitives.csproj" />-->
     <ProjectReference Include="..\Benchmarks.Common\Benchmarks.Common.csproj" />
-    <ProjectReference Include="..\StandardClient\Samples.StandardClient.csproj" />
-    <ProjectReference Include="..\StandardCommon\Samples.StandardCommon.csproj" />
   </ItemGroup>
 
 </Project>

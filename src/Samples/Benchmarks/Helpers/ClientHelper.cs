@@ -9,7 +9,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Text;
 
-namespace Benchmarks.CoreWCF.Helpers
+namespace Benchmarks.Helpers
 {
     public static class ClientHelper
     {
@@ -38,6 +38,10 @@ namespace Benchmarks.CoreWCF.Helpers
         public static BasicHttpBinding GetBufferedModeBinding()
         {
             var binding = new BasicHttpBinding();
+            binding.TransferMode = TransferMode.Streamed;
+            binding.MaxBufferSize = int.MaxValue;
+            binding.MaxBufferPoolSize = int.MaxValue;
+            binding.MaxReceivedMessageSize = int.MaxValue;
             ApplyBenchmarkTimeouts(binding);
             return binding;
         }
