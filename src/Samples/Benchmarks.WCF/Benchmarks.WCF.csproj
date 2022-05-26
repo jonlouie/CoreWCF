@@ -44,8 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientContract\IEchoService.cs" />
-    <Compile Include="Helpers\ClientHelper.cs" />
-    <Compile Include="Helpers\ServiceHelper.cs" />
+    <Compile Include="Helpers\ClientBindingFactory.cs" />
     <Compile Include="ServiceContract\IEchoService.cs" />
     <Compile Include="Services\EchoService.cs" />
     <Compile Include="HttpBindingBenchmarks.cs" />

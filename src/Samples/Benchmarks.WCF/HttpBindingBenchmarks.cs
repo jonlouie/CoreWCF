@@ -13,7 +13,7 @@ using Benchmarks.WCF.Services;
 
 namespace Benchmarks.WCF
 {
-    //[SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
+    [SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
     public class HttpBindingBenchmarks
     {
         private readonly IEnumerable<SampleData> _dataList1 = DataGenerator.GenerateRecords(1);
@@ -22,26 +22,26 @@ namespace Benchmarks.WCF
         private ServiceHost _host;
         private ClientContract.IEchoService _channel;
 
-        //[GlobalSetup]
+        [GlobalSetup]
         public void HttpBindingGlobalSetup()
         {
             _host = new ServiceHost(typeof(EchoService));
             _host.Open();
-            var httpBinding = ClientHelper.GetBufferedModeBinding();
+            var httpBinding = ClientBindingFactory.GetStandardBasicHttpBinding();
             var factory = new System.ServiceModel.ChannelFactory<ClientContract.IEchoService>(httpBinding,
                 new System.ServiceModel.EndpointAddress(new Uri("http://localhost:8080/BasicWcfService/basichttp.svc")));
             _channel = factory.CreateChannel();
             ((System.ServiceModel.Channels.IChannel)_channel).Open();
         }
 
-        //[GlobalCleanup]
+        [GlobalCleanup]
         public void HttpBindingGlobalCleanup()
         {
             ((System.ServiceModel.Channels.IChannel)_channel).Close();
             _host.Close();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void HttpBindingEchoSampleData1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
@@ -55,7 +55,7 @@ namespace Benchmarks.WCF
             var result = _channel.EchoSampleData(_dataList100);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void HttpBindingEchoSampleData1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
@@ -76,7 +76,7 @@ namespace Benchmarks.WCF
             var result = _channel.ReceiveSampleData(100);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void HttpBindingReceiveSampleData1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
@@ -97,30 +97,11 @@ namespace Benchmarks.WCF
             var result = _channel.SendSampleData(_dataList100);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void HttpBindingSendSampleData1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
             var result = _channel.SendSampleData(_dataList1000);
         }
-
-        //#region Startups
-        //internal class Startup
-        //{
-        //    public void ConfigureServices(IServiceCollection services)
-        //    {
-        //        services.AddServiceModelServices();
-        //    }
-
-        //    public void Configure(IApplicationBuilder app)
-        //    {
-        //        app.UseServiceModel(builder =>
-        //        {
-        //            builder.AddService<Services.EchoService>();
-        //            builder.AddServiceEndpoint<Services.EchoService, ServiceContract.IEchoService>(new BasicHttpBinding(), "/BasicWcfService/basichttp.svc");
-        //        });
-        //    }
-        //}
-        //#endregion
     }
 }
