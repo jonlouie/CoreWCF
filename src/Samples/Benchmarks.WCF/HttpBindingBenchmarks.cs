@@ -9,11 +9,13 @@ using Benchmarks.Common.DataContract;
 using Benchmarks.Common.Helpers;
 using Benchmarks.WCF.Helpers;
 using System.ServiceModel;
+using Benchmarks.Common.Configs;
 using Benchmarks.WCF.Services;
 
 namespace Benchmarks.WCF
 {
-    [SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
+    [Config(typeof(HttpBindingBenchmarksConfig))]
+    [SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 0, targetCount: 100)]
     public class HttpBindingBenchmarks
     {
         private readonly IEnumerable<SampleData> _dataList1 = DataGenerator.GenerateRecords(1);

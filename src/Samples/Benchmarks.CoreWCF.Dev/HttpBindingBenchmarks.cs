@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
+using Benchmarks.Common.Configs;
 using Benchmarks.Common.DataContract;
 using Benchmarks.Common.Helpers;
 using Benchmarks.CoreWCF.Dev.Helpers;
@@ -16,7 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Benchmarks.CoreWCF.Dev
 {
-    [SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 10, targetCount: 100)]
+    [Config(typeof(HttpBindingBenchmarksConfig))]
+    [SimpleJob(RunStrategy.Throughput, launchCount: 1, warmupCount: 0, targetCount: 100)]
     public class HttpBindingBenchmarks
     {
         private readonly IEnumerable<SampleData> _dataList1 = DataGenerator.GenerateRecords(1);
