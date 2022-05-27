@@ -60,9 +60,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.Common", "Sample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.CoreWCF.Release", "Samples\Benchmarks.CoreWCF.Release\Benchmarks.CoreWCF.Release.csproj", "{1EB0D13E-9D80-46C5-B050-00FA7F93D309}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.WCF", "samples\Benchmarks.WCF\Benchmarks.WCF.csproj", "{A366970F-3BA0-4464-91E7-88D07D8CDDCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.WCF", "Samples\Benchmarks.WCF\Benchmarks.WCF.csproj", "{A366970F-3BA0-4464-91E7-88D07D8CDDCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Client", "Benchmarks.Client\Benchmarks.Client.csproj", "{F730D85E-384E-476E-AA71-2B895A588AFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Client", "Samples\Benchmarks.Client\Benchmarks.Client.csproj", "{F730D85E-384E-476E-AA71-2B895A588AFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
