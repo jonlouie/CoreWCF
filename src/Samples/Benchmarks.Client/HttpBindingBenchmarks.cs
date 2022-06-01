@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using Benchmarks.Common.Configs;
@@ -111,15 +113,15 @@ namespace Benchmarks.Client
             var result = _channel.SendSampleData(_dataList1000);
         }
     }
-    public class DebugCalls
+    public class NonBenchmarkCalls
     {
         private readonly string _benchmarkEndpointAddress = $"http://{Program.HostName}:{Program.Port}/BasicWcfService/basichttp.svc";
-        private readonly IEnumerable<SampleData> _dataList1 = DataGenerator.GenerateRecords(1);
-        private readonly IEnumerable<SampleData> _dataList100 = DataGenerator.GenerateRecords(100);
-        private readonly IEnumerable<SampleData> _dataList1000 = DataGenerator.GenerateRecords(1000);
+        public readonly IEnumerable<SampleData> DataList1 = DataGenerator.GenerateRecords(1);
+        public readonly IEnumerable<SampleData> DataList100 = DataGenerator.GenerateRecords(100);
+        public readonly IEnumerable<SampleData> DataList1000 = DataGenerator.GenerateRecords(1000);
         private ClientContract.IEchoService _channel;
 
-        public void DebugSetup()
+        public void Setup()
         {
             var httpBinding = new BasicHttpBinding
             {
@@ -136,7 +138,7 @@ namespace Benchmarks.Client
             ((System.ServiceModel.Channels.IChannel)_channel).Open();
         }
 
-        public void DebugCleanup()
+        public void Cleanup()
         {
             ((System.ServiceModel.Channels.IChannel)_channel).Close();
         }
@@ -144,7 +146,67 @@ namespace Benchmarks.Client
         public void DebugEchoSampleData1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList1);
+            var result = _channel.EchoSampleData(DataList1);
+        }
+
+        public void EchoSampleDataForever(IEnumerable<SampleData> dataToEcho, int maxThreads = 20)
+        {
+            var tasks = new List<Task>();
+            foreach (int i in Enumerable.Range(0, maxThreads))
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    int threadId = i;
+                    while (true)
+                    {
+                        // Always save the returned value or the call will be optimized away, preventing benchmark execution
+                        var result = _channel.EchoSampleData(dataToEcho);
+                        Console.WriteLine($"Thread {threadId}: Echo received");
+                    }
+                }));
+            }
+
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        public void ReceiveSampleDataForever(int numRecordsToReceive, int maxThreads = 20)
+        {
+            var tasks = new List<Task>();
+            foreach (int i in Enumerable.Range(0, maxThreads))
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    int threadId = i;
+                    while (true)
+                    {
+                        // Always save the returned value or the call will be optimized away, preventing benchmark execution
+                        var result = _channel.ReceiveSampleData(numRecordsToReceive);
+                        Console.WriteLine($"Thread {threadId}: Data received");
+                    }
+                }));
+            }
+
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        public void SendSampleDataForever(IEnumerable<SampleData> recordsToSend, int maxThreads = 20)
+        {
+            var tasks = new List<Task>();
+            foreach (int i in Enumerable.Range(0, maxThreads))
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    int threadId = i;
+                    while (true)
+                    {
+                        // Always save the returned value or the call will be optimized away, preventing benchmark execution
+                        var result = _channel.SendSampleData(recordsToSend);
+                        Console.WriteLine($"Thread {threadId}: Delivery receipt received");
+                    }
+                }));
+            }
+
+            Task.WaitAll(tasks.ToArray());
         }
     }
 }

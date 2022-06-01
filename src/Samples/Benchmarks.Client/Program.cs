@@ -5,7 +5,7 @@ namespace Benchmarks.Client
 {
     public class Program
     {
-        public const string HostName = "ec2-35-86-186-181.us-west-2.compute.amazonaws.com";
+        public const string HostName = "localhost";
         public const string Port = "8080";
 
         static void Main(string[] args)
@@ -13,13 +13,17 @@ namespace Benchmarks.Client
             //var summary = BenchmarkRunner.Run(typeof(Program).Assembly);
 
             // Used for debugging
-            var debugCalls = new DebugCalls();
+            var nonBenchmarkCalls = new NonBenchmarkCalls();
             Console.WriteLine("Setup");
-            debugCalls.DebugSetup();
+            nonBenchmarkCalls.Setup();
+
             Console.WriteLine("Making the call");
-            debugCalls.DebugEchoSampleData1();
+            nonBenchmarkCalls.EchoSampleDataForever(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.ReceiveSampleDataForever(100);
+            nonBenchmarkCalls.SendSampleDataForever(nonBenchmarkCalls.DataList100);
+
             Console.WriteLine("Cleaning up");
-            debugCalls.DebugCleanup();
+            nonBenchmarkCalls.Cleanup();
         }
     }
 }
