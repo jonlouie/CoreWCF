@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CoreWCF.Configuration;
 using CoreWCF.Runtime;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -68,7 +69,7 @@ namespace CoreWCF.Channels
                 AuthenticationScheme = tbe.AuthenticationScheme,
                 WebSocketSettings = tbe.WebSocketSettings.Clone()
             };
-
+            httpSettings = SetSecuritySettings(httpSettings, _serviceDispatcher.Binding);
             _httpSettings = httpSettings;
             WebSocketOptions = CreateWebSocketOptions(tbe);
 
@@ -97,6 +98,21 @@ namespace CoreWCF.Channels
 
         internal async Task HandleRequest(HttpContext context)
         {
+            if (_httpSettings.IsAuthenticationRequired)
+            {
+                string scheme = _httpSettings.AuthenticationScheme.ToString();
+                AuthenticateResult authenticateResult = await context.AuthenticateAsync(scheme);
+                if (authenticateResult.None)
+                {
+                    await context.ChallengeAsync(scheme);
+                    return;
+                }
+                else
+                {
+                    context.SetAuthenticateResult(authenticateResult);
+                }
+            }
+
             if (!context.WebSockets.IsWebSocketRequest)
             {
                 if (_replyChannelDispatcher == null)
@@ -195,6 +211,16 @@ namespace CoreWCF.Channels
             {
                 WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
             }
+        }
+
+        private HttpTransportSettings SetSecuritySettings(HttpTransportSettings httpSettings, Binding binding)
+        {
+            if (binding is WSHttpBinding wsHttpBinding)
+            {
+                httpSettings.SecurityMode = wsHttpBinding.Security.Mode;
+                httpSettings.ClientCredentialType = wsHttpBinding.Security.Transport.ClientCredentialType;
+            }
+            return httpSettings;
         }
     }
 }

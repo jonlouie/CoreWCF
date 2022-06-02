@@ -3,9 +3,8 @@
 
 using System;
 using System.ComponentModel;
-using System.Net;
-using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.Threading;
@@ -14,6 +13,7 @@ using CoreWCF;
 using CoreWCF.Configuration;
 using CoreWCF.IdentityModel.Selectors;
 using Helpers;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -163,6 +163,33 @@ namespace WSHttp
             }
         }
 
+        [Fact, Description("transport-security-with-windows-authentication")]
+        [Trait("Category", "NetCoreOnly")] // Windows auth not supported on NetFx
+        internal void WSHttpRequestReplyWithTransportMessageImpersonateEchoString()
+        {
+            string testString = new string('a', 3000);
+            IWebHost host = ServiceHelper.CreateHttpsWebHostBuilder<WSHttpTransportWithImpersonation>(_output).Build();
+
+            using (host)
+            {
+                host.Start();
+                var callingUser = WindowsIdentity.GetCurrent();
+                System.ServiceModel.WSHttpBinding wsHttpBinding = ClientHelper.GetBufferedModeWSHttpBinding(System.ServiceModel.SecurityMode.Transport);
+                var factory = new System.ServiceModel.ChannelFactory<ClientContract.IEchoService>(wsHttpBinding,
+                    new System.ServiceModel.EndpointAddress(new Uri("https://localhost:8443/WSHttpWcfService/basichttp.svc")));
+                factory.Credentials.Windows.AllowedImpersonationLevel = TokenImpersonationLevel.Impersonation;
+                factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new System.ServiceModel.Security.X509ServiceCertificateAuthentication
+                {
+                    CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
+                };
+                ClientContract.IEchoService channel = factory.CreateChannel();
+                ((IChannel)channel).Open();
+                string result = channel.EchoForImpersonation(testString);
+                Assert.Equal(testString, result);
+                ((IChannel)channel).Close();
+            }
+        }
+
         internal class CustomTestValidator : UserNamePasswordValidator
         {
             public override ValueTask ValidateAsync(string userName, string password)
@@ -251,7 +278,20 @@ namespace WSHttp
         {
             public WSHttpNoSecurity() : base(SecurityMode.None, MessageCredentialType.None)
             {
-               
+            }
+        }
+
+        internal class WSHttpTransportWithImpersonation : StartupWSHttpBase
+        {
+            public WSHttpTransportWithImpersonation() :
+                base(SecurityMode.Transport, MessageCredentialType.None)
+            {
+            }
+
+            public override CoreWCF.Channels.Binding ChangeBinding(WSHttpBinding wsBinding)
+            {
+                wsBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
+                return wsBinding;
             }
         }
 
@@ -267,6 +307,8 @@ namespace WSHttp
             public void ConfigureServices(IServiceCollection services)
             {
                 services.AddServiceModelServices();
+                services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+                    .AddNegotiate();
             }
 
             public virtual void ChangeHostBehavior(ServiceHostBase host)
