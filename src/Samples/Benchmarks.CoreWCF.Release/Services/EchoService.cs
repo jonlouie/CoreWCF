@@ -12,19 +12,19 @@ namespace Benchmarks.CoreWCF.Release.Services
     [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class EchoService : ServiceContract.IEchoService
     {
-        public async Task<IEnumerable<SampleData>> EchoSampleData(IEnumerable<SampleData> echoData)
+        public async Task<IEnumerable<SampleData>> EchoSampleDataAsync(IEnumerable<SampleData> echoData)
         {
             return await Task.FromResult(echoData);
         }
 
         // Client receives data from this endpoint
-        public async Task<IEnumerable<SampleData>> ReceiveSampleData(int numRecords)
+        public async Task<IEnumerable<SampleData>> ReceiveSampleDataAsync(int numRecords)
         {
             return await Task.FromResult(DataGenerator.GenerateRecords(numRecords));
         }
 
         // Client sends data to this endpoint
-        public async Task<bool> SendSampleData(IEnumerable<SampleData> echo)
+        public async Task<bool> SendSampleDataAsync(IEnumerable<SampleData> echo)
         {
             return await Task.FromResult(true);
         }

@@ -51,66 +51,66 @@ namespace Benchmarks.Client
         }
 
         [Benchmark]
-        public void HttpBindingEchoSampleData1()
+        public void HttpBindingEchoSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList1);
+            var result = _channel.EchoSampleDataAsync(_dataList1);
         }
 
         [Benchmark]
-        public void HttpBindingEchoSampleData100()
+        public void HttpBindingEchoSampleDataAsync100()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList100);
+            var result = _channel.EchoSampleDataAsync(_dataList100);
         }
 
         [Benchmark]
-        public void HttpBindingEchoSampleData1000()
+        public void HttpBindingEchoSampleDataAsync1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList1000);
+            var result = _channel.EchoSampleDataAsync(_dataList1000);
         }
 
         [Benchmark]
-        public void HttpBindingReceiveSampleData1()
+        public void HttpBindingReceiveSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.ReceiveSampleData(1);
+            var result = _channel.ReceiveSampleDataAsync(1);
         }
 
         [Benchmark]
-        public void HttpBindingReceiveSampleData100()
+        public void HttpBindingReceiveSampleDataAsync100()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.ReceiveSampleData(100);
+            var result = _channel.ReceiveSampleDataAsync(100);
         }
 
         [Benchmark]
-        public void HttpBindingReceiveSampleData1000()
+        public void HttpBindingReceiveSampleDataAsync1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.ReceiveSampleData(1000);
+            var result = _channel.ReceiveSampleDataAsync(1000);
         }
 
         [Benchmark]
-        public void HttpBindingSendSampleData1()
+        public void HttpBindingSendSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.SendSampleData(_dataList1);
+            var result = _channel.SendSampleDataAsync(_dataList1);
         }
 
         [Benchmark]
-        public void HttpBindingSendSampleData100()
+        public void HttpBindingSendSampleDataAsync100()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.SendSampleData(_dataList100);
+            var result = _channel.SendSampleDataAsync(_dataList100);
         }
 
         [Benchmark]
-        public void HttpBindingSendSampleData1000()
+        public void HttpBindingSendSampleDataAsync1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.SendSampleData(_dataList1000);
+            var result = _channel.SendSampleDataAsync(_dataList1000);
         }
     }
     public class NonBenchmarkCalls
@@ -144,13 +144,13 @@ namespace Benchmarks.Client
             ((System.ServiceModel.Channels.IChannel)_channel).Close();
         }
 
-        public void DebugEchoSampleData1()
+        public void DebugEchoSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(DataList1);
+            var result = _channel.EchoSampleDataAsync(DataList1);
         }
 
-        public void EchoSampleDataStress(IEnumerable<SampleData> dataToEcho, int invocationsPerThread = 1000, int maxThreads = 20)
+        public void EchoSampleDataStressAsync(IEnumerable<SampleData> dataToEcho, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
@@ -172,7 +172,7 @@ namespace Benchmarks.Client
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = channel.EchoSampleData(dataToEcho);
+                            var result = channel.EchoSampleDataAsync(dataToEcho);
                             Console.WriteLine($"Thread {threadId}: Echo {invocationNumber} received");
                         }
                         catch (Exception ex)
@@ -196,7 +196,7 @@ namespace Benchmarks.Client
             Task.WaitAll(tasks.ToArray());
         }
 
-        public void ReceiveSampleDataStress(int numRecordsToReceive, int invocationsPerThread = 1000, int maxThreads = 20)
+        public void ReceiveSampleDataStressAsync(int numRecordsToReceive, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
@@ -218,14 +218,13 @@ namespace Benchmarks.Client
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = _channel.ReceiveSampleData(numRecordsToReceive);
+                            var result = _channel.ReceiveSampleDataAsync(numRecordsToReceive);
                             Console.WriteLine($"Thread {threadId}: Data received {invocationNumber}");
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Error on Receive: Thread {threadId}, Invocation: {invocationNumber}");
                         }
-
 
                         try
                         {
@@ -243,7 +242,7 @@ namespace Benchmarks.Client
             Task.WaitAll(tasks.ToArray());
         }
 
-        public void SendSampleDataStress(IEnumerable<SampleData> recordsToSend, int invocationsPerThread = 1000, int maxThreads = 20)
+        public void SendSampleDataStressAsync(IEnumerable<SampleData> recordsToSend, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
@@ -265,14 +264,13 @@ namespace Benchmarks.Client
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = _channel.SendSampleData(recordsToSend);
+                            var result = _channel.SendSampleDataAsync(recordsToSend);
                             Console.WriteLine($"Thread {threadId}: Delivery receipt received");
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Error on Send: Thread {threadId}, Invocation: {invocationNumber}");
                         }
-
 
                         try
                         {

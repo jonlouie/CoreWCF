@@ -23,7 +23,7 @@ namespace Benchmarks.WCF
             // Used for debugging
             //var httpBindingBenchmarks = new HttpBindingBenchmarks();
             //httpBindingBenchmarks.HttpBindingGlobalSetup();
-            //httpBindingBenchmarks.HttpBindingEchoSampleData1000();
+            //httpBindingBenchmarks.HttpBindingEchoSampleDataAsync1000();
             //httpBindingBenchmarks.HttpBindingGlobalCleanup();
         }
     }

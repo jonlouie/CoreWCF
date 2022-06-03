@@ -18,9 +18,9 @@ namespace Benchmarks.Client
             nonBenchmarkCalls.Setup();
 
             Console.WriteLine("Making the call");
-            nonBenchmarkCalls.EchoSampleDataStress(nonBenchmarkCalls.DataList100);
-            nonBenchmarkCalls.ReceiveSampleDataStress(100);
-            nonBenchmarkCalls.SendSampleDataStress(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.EchoSampleDataStressAsync(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.ReceiveSampleDataStressAsync(100);
+            nonBenchmarkCalls.SendSampleDataStressAsync(nonBenchmarkCalls.DataList100);
 
             Console.WriteLine("Cleaning up");
             nonBenchmarkCalls.Cleanup();

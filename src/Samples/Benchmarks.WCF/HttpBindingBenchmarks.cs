@@ -44,66 +44,66 @@ namespace Benchmarks.WCF
         }
 
         [Benchmark]
-        public void HttpBindingEchoSampleData1()
+        public void HttpBindingEchoSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList1);
+            var result = _channel.EchoSampleDataAsync(_dataList1);
         }
 
         [Benchmark]
-        public void HttpBindingEchoSampleData100()
+        public void HttpBindingEchoSampleDataAsync100()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList100);
+            var result = _channel.EchoSampleDataAsync(_dataList100);
         }
 
         [Benchmark]
-        public void HttpBindingEchoSampleData1000()
+        public void HttpBindingEchoSampleDataAsync1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.EchoSampleData(_dataList1000);
+            var result = _channel.EchoSampleDataAsync(_dataList1000);
         }
 
         [Benchmark]
-        public void HttpBindingReceiveSampleData1()
+        public void HttpBindingReceiveSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.ReceiveSampleData(1);
+            var result = _channel.ReceiveSampleDataAsync(1);
         }
 
         [Benchmark]
-        public void HttpBindingReceiveSampleData100()
+        public void HttpBindingReceiveSampleDataAsync100()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.ReceiveSampleData(100);
+            var result = _channel.ReceiveSampleDataAsync(100);
         }
 
         [Benchmark]
-        public void HttpBindingReceiveSampleData1000()
+        public void HttpBindingReceiveSampleDataAsync1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.ReceiveSampleData(1000);
+            var result = _channel.ReceiveSampleDataAsync(1000);
         }
 
         [Benchmark]
-        public void HttpBindingSendSampleData1()
+        public void HttpBindingSendSampleDataAsync1()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.SendSampleData(_dataList1);
+            var result = _channel.SendSampleDataAsync(_dataList1);
         }
 
         [Benchmark]
-        public void HttpBindingSendSampleData100()
+        public void HttpBindingSendSampleDataAsync100()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.SendSampleData(_dataList100);
+            var result = _channel.SendSampleDataAsync(_dataList100);
         }
 
         [Benchmark]
-        public void HttpBindingSendSampleData1000()
+        public void HttpBindingSendSampleDataAsync1000()
         {
             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-            var result = _channel.SendSampleData(_dataList1000);
+            var result = _channel.SendSampleDataAsync(_dataList1000);
         }
     }
 }

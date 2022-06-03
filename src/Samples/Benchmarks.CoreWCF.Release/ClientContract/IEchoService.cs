@@ -18,16 +18,16 @@ namespace Benchmarks.CoreWCF.Release.ClientContract
     [ServiceContract(Namespace = Constants.NS, Name = Constants.ECHOSERVICE_NAME)]
     public interface IEchoService
     {
-        [OperationContract(Name = "EchoSampleData", Action = Constants.OPERATION_BASE + "EchoSampleData",
-            ReplyAction = Constants.OPERATION_BASE + "EchoSampleDataResponse")]
-        Task<IEnumerable<SampleData>> EchoSampleData(IEnumerable<SampleData> sampleData);
+        [OperationContract(Name = "EchoSampleDataAsync", Action = Constants.OPERATION_BASE + "EchoSampleDataAsync",
+            ReplyAction = Constants.OPERATION_BASE + "EchoSampleDataAsyncResponse")]
+        Task<IEnumerable<SampleData>> EchoSampleDataAsync(IEnumerable<SampleData> sampleData);
 
-        [OperationContract(Name = "ReceiveSampleData", Action = Constants.OPERATION_BASE + "ReceiveSampleData",
-            ReplyAction = Constants.OPERATION_BASE + "ReceiveSampleDataResponse")]
-        Task<IEnumerable<SampleData>> ReceiveSampleData(int numRecords);
+        [OperationContract(Name = "ReceiveSampleDataAsync", Action = Constants.OPERATION_BASE + "ReceiveSampleDataAsync",
+            ReplyAction = Constants.OPERATION_BASE + "ReceiveSampleDataAsyncResponse")]
+        Task<IEnumerable<SampleData>> ReceiveSampleDataAsync(int numRecords);
 
-        [OperationContract(Name = "SendSampleData", Action = Constants.OPERATION_BASE + "SendSampleData",
-            ReplyAction = Constants.OPERATION_BASE + "SendSampleDataResponse")]
-        Task<bool> SendSampleData(IEnumerable<SampleData> echo);
+        [OperationContract(Name = "SendSampleDataAsync", Action = Constants.OPERATION_BASE + "SendSampleDataAsync",
+            ReplyAction = Constants.OPERATION_BASE + "SendSampleDataAsyncResponse")]
+        Task<bool> SendSampleDataAsync(IEnumerable<SampleData> echo);
     }
 }
