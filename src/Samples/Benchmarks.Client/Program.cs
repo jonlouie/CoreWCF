@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using System;
+using System.Threading.Tasks;
 
 namespace Benchmarks.Client
 {
@@ -8,7 +9,7 @@ namespace Benchmarks.Client
         public const string HostName = "localhost";
         public const string Port = "8080";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //var summary = BenchmarkRunner.Run(typeof(Program).Assembly);
 
@@ -18,9 +19,9 @@ namespace Benchmarks.Client
             nonBenchmarkCalls.Setup();
 
             Console.WriteLine("Making the call");
-            nonBenchmarkCalls.EchoSampleDataStressAsync(nonBenchmarkCalls.DataList100);
-            nonBenchmarkCalls.ReceiveSampleDataStressAsync(100);
-            nonBenchmarkCalls.SendSampleDataStressAsync(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.EchoSampleDataStress(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.ReceiveSampleDataStress(100);
+            nonBenchmarkCalls.SendSampleDataStress(nonBenchmarkCalls.DataList100);
 
             Console.WriteLine("Cleaning up");
             nonBenchmarkCalls.Cleanup();

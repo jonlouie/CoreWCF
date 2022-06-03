@@ -150,13 +150,13 @@ namespace Benchmarks.Client
             var result = _channel.EchoSampleDataAsync(DataList1);
         }
 
-        public void EchoSampleDataStressAsync(IEnumerable<SampleData> dataToEcho, int invocationsPerThread = 1000, int maxThreads = 20)
+        public void EchoSampleDataStress(IEnumerable<SampleData> dataToEcho, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
                 var channel = _factory.CreateChannel();
-                var t = new Task(() =>
+                var t = new Task(async () =>
                 {
                     foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
@@ -172,7 +172,7 @@ namespace Benchmarks.Client
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = channel.EchoSampleDataAsync(dataToEcho);
+                            var result = await channel.EchoSampleDataAsync(dataToEcho);
                             Console.WriteLine($"Thread {threadId}: Echo {invocationNumber} received");
                         }
                         catch (Exception ex)
@@ -196,13 +196,13 @@ namespace Benchmarks.Client
             Task.WaitAll(tasks.ToArray());
         }
 
-        public void ReceiveSampleDataStressAsync(int numRecordsToReceive, int invocationsPerThread = 1000, int maxThreads = 20)
+        public void ReceiveSampleDataStress(int numRecordsToReceive, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
                 var channel = _factory.CreateChannel();
-                var t = new Task(() =>
+                var t = new Task(async () =>
                 {
                     foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
@@ -218,7 +218,7 @@ namespace Benchmarks.Client
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = _channel.ReceiveSampleDataAsync(numRecordsToReceive);
+                            var result = await _channel.ReceiveSampleDataAsync(numRecordsToReceive);
                             Console.WriteLine($"Thread {threadId}: Data received {invocationNumber}");
                         }
                         catch (Exception ex)
@@ -242,13 +242,13 @@ namespace Benchmarks.Client
             Task.WaitAll(tasks.ToArray());
         }
 
-        public void SendSampleDataStressAsync(IEnumerable<SampleData> recordsToSend, int invocationsPerThread = 1000, int maxThreads = 20)
+        public void SendSampleDataStress(IEnumerable<SampleData> recordsToSend, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
                 var channel = _factory.CreateChannel();
-                var t = new Task(() =>
+                var t = new Task(async () =>
                 {
                     foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
@@ -264,7 +264,7 @@ namespace Benchmarks.Client
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = _channel.SendSampleDataAsync(recordsToSend);
+                            var result = await _channel.SendSampleDataAsync(recordsToSend);
                             Console.WriteLine($"Thread {threadId}: Delivery receipt received");
                         }
                         catch (Exception ex)
