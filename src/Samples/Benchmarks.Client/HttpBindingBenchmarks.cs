@@ -150,25 +150,30 @@ namespace Benchmarks.Client
             var result = _channel.EchoSampleDataAsync(DataList1);
         }
 
+        private ClientContract.IEchoService[] GetChannelsArray(int numChannels)
+        {
+            var channels = new ClientContract.IEchoService[numChannels];
+            foreach (int id in Enumerable.Range(0, numChannels))
+            {
+                channels[id] = _factory.CreateChannel();
+                ((IClientChannel)channels[id]).Open();
+            }
+
+            return channels;
+        }
+
         public void EchoSampleDataStress(IEnumerable<SampleData> dataToEcho, int invocationsPerThread = 1000, int maxThreads = 20)
         {
+            var channels = GetChannelsArray(maxThreads);
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
-                var channel = _factory.CreateChannel();
-                var t = new Task(async () =>
+                Console.WriteLine($"Create task {threadId}");
+                var channel = channels[threadId];
+                var t = Task.Run(async () =>
                 {
                     foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
-                        try
-                        {
-                            ((IClientChannel)channel).Open();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
-                        }
-
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
@@ -177,89 +182,85 @@ namespace Benchmarks.Client
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error on Echo: Thread {threadId}, Invocation: {invocationNumber}");
-                        }
-
-                        try
-                        {
-                            ((IClientChannel)channel).Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
+                            Console.WriteLine($"Error on Echo: Thread {threadId}, Invocation: {invocationNumber}, {ex}");
                         }
                     }
                 });
                 tasks.Add(t);
             }
-            tasks.ForEach(t => t.Start());
+            Console.WriteLine("Waiting for the tasks");
             Task.WaitAll(tasks.ToArray());
         }
 
         public void ReceiveSampleDataStress(int numRecordsToReceive, int invocationsPerThread = 1000, int maxThreads = 20)
         {
+            var channels = GetChannelsArray(maxThreads);
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
-                var channel = _factory.CreateChannel();
-                var t = new Task(async () =>
+                Console.WriteLine($"Create task {threadId}");
+                var channel = channels[threadId];
+                var t = Task.Run(async () =>
                 {
                     foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
-                        try
-                        {
-                            ((IClientChannel)channel).Open();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
-                        }
+                        //try
+                        //{
+                        //    ((IClientChannel)channel).Open();
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
+                        //}
 
                         try
                         {
                             // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                            var result = await _channel.ReceiveSampleDataAsync(numRecordsToReceive);
+                            var result = await channel.ReceiveSampleDataAsync(numRecordsToReceive);
                             Console.WriteLine($"Thread {threadId}: Data received {invocationNumber}");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error on Receive: Thread {threadId}, Invocation: {invocationNumber}");
+                            Console.WriteLine($"Error on Receive: Thread {threadId}, Invocation: {invocationNumber}, {ex}");
                         }
 
-                        try
-                        {
-                            ((IClientChannel)channel).Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
-                        }
+                        //try
+                        //{
+                        //    ((IClientChannel)channel).Close();
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
+                        //}
                     }
                 });
                 tasks.Add(t);
             }
-            tasks.ForEach(t => t.Start());
+            //tasks.ForEach(t => t.Start());
+            Console.WriteLine("Waiting for the tasks");
             Task.WaitAll(tasks.ToArray());
         }
 
         public void SendSampleDataStress(IEnumerable<SampleData> recordsToSend, int invocationsPerThread = 1000, int maxThreads = 20)
         {
+            var channels = GetChannelsArray(maxThreads);
             var tasks = new List<Task>();
             foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
-                var channel = _factory.CreateChannel();
-                var t = new Task(async () =>
+                Console.WriteLine($"Create task {threadId}");
+                var channel = channels[threadId];
+                var t = Task.Run(async () =>
                 {
                     foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
-                        try
-                        {
-                            ((IClientChannel)channel).Open();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
-                        }
+                        //try
+                        //{
+                        //    ((IClientChannel)channel).Open();
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
+                        //}
 
                         try
                         {
@@ -272,19 +273,20 @@ namespace Benchmarks.Client
                             Console.WriteLine($"Error on Send: Thread {threadId}, Invocation: {invocationNumber}");
                         }
 
-                        try
-                        {
-                            ((IClientChannel)channel).Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
-                        }
+                        //try
+                        //{
+                        //    ((IClientChannel)channel).Close();
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
+                        //}
                     }
                 });
                 tasks.Add(t);
             }
-            tasks.ForEach(t => t.Start());
+            //tasks.ForEach(t => t.Start());
+            Console.WriteLine("Waiting for the tasks");
             Task.WaitAll(tasks.ToArray());
         }
     }
