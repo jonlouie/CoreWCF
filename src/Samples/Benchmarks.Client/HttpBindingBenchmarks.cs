@@ -119,6 +119,7 @@ namespace Benchmarks.Client
         public readonly IEnumerable<SampleData> DataList1 = DataGenerator.GenerateRecords(1);
         public readonly IEnumerable<SampleData> DataList100 = DataGenerator.GenerateRecords(100);
         public readonly IEnumerable<SampleData> DataList1000 = DataGenerator.GenerateRecords(1000);
+        private ChannelFactory<ClientContract.IEchoService> _factory;
         private ClientContract.IEchoService _channel;
 
         public void Setup()
@@ -133,8 +134,8 @@ namespace Benchmarks.Client
                 MaxReceivedMessageSize = int.MaxValue
             };
             var endpointAddress = new EndpointAddress(new Uri(_benchmarkEndpointAddress));
-            var factory = new ChannelFactory<ClientContract.IEchoService>(httpBinding, endpointAddress);
-            _channel = factory.CreateChannel();
+            _factory = new ChannelFactory<ClientContract.IEchoService>(httpBinding, endpointAddress);
+            _channel = _factory.CreateChannel();
             ((System.ServiceModel.Channels.IChannel)_channel).Open();
         }
 
@@ -149,63 +150,143 @@ namespace Benchmarks.Client
             var result = _channel.EchoSampleData(DataList1);
         }
 
-        public void EchoSampleDataForever(IEnumerable<SampleData> dataToEcho, int maxThreads = 20)
+        public void EchoSampleDataStress(IEnumerable<SampleData> dataToEcho, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
-            foreach (int i in Enumerable.Range(0, maxThreads))
+            foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
-                tasks.Add(Task.Run(() =>
+                var channel = _factory.CreateChannel();
+                var t = new Task(() =>
                 {
-                    int threadId = i;
-                    while (true)
+                    foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
-                        // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                        var result = _channel.EchoSampleData(dataToEcho);
-                        Console.WriteLine($"Thread {threadId}: Echo received");
-                    }
-                }));
-            }
+                        try
+                        {
+                            ((IClientChannel)channel).Open();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
 
+                        try
+                        {
+                            // Always save the returned value or the call will be optimized away, preventing benchmark execution
+                            var result = channel.EchoSampleData(dataToEcho);
+                            Console.WriteLine($"Thread {threadId}: Echo {invocationNumber} received");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on Echo: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
+
+                        try
+                        {
+                            ((IClientChannel)channel).Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
+                    }
+                });
+                tasks.Add(t);
+            }
+            tasks.ForEach(t => t.Start());
             Task.WaitAll(tasks.ToArray());
         }
 
-        public void ReceiveSampleDataForever(int numRecordsToReceive, int maxThreads = 20)
+        public void ReceiveSampleDataStress(int numRecordsToReceive, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
-            foreach (int i in Enumerable.Range(0, maxThreads))
+            foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
-                tasks.Add(Task.Run(() =>
+                var channel = _factory.CreateChannel();
+                var t = new Task(() =>
                 {
-                    int threadId = i;
-                    while (true)
+                    foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
-                        // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                        var result = _channel.ReceiveSampleData(numRecordsToReceive);
-                        Console.WriteLine($"Thread {threadId}: Data received");
-                    }
-                }));
-            }
+                        try
+                        {
+                            ((IClientChannel)channel).Open();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
 
+                        try
+                        {
+                            // Always save the returned value or the call will be optimized away, preventing benchmark execution
+                            var result = _channel.ReceiveSampleData(numRecordsToReceive);
+                            Console.WriteLine($"Thread {threadId}: Data received {invocationNumber}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on Receive: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
+
+
+                        try
+                        {
+                            ((IClientChannel)channel).Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
+                    }
+                });
+                tasks.Add(t);
+            }
+            tasks.ForEach(t => t.Start());
             Task.WaitAll(tasks.ToArray());
         }
 
-        public void SendSampleDataForever(IEnumerable<SampleData> recordsToSend, int maxThreads = 20)
+        public void SendSampleDataStress(IEnumerable<SampleData> recordsToSend, int invocationsPerThread = 1000, int maxThreads = 20)
         {
             var tasks = new List<Task>();
-            foreach (int i in Enumerable.Range(0, maxThreads))
+            foreach (int threadId in Enumerable.Range(0, maxThreads))
             {
-                tasks.Add(Task.Run(() =>
+                var channel = _factory.CreateChannel();
+                var t = new Task(() =>
                 {
-                    int threadId = i;
-                    while (true)
+                    foreach (int invocationNumber in Enumerable.Range(0, invocationsPerThread))
                     {
-                        // Always save the returned value or the call will be optimized away, preventing benchmark execution
-                        var result = _channel.SendSampleData(recordsToSend);
-                        Console.WriteLine($"Thread {threadId}: Delivery receipt received");
-                    }
-                }));
-            }
+                        try
+                        {
+                            ((IClientChannel)channel).Open();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on channel open: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
 
+                        try
+                        {
+                            // Always save the returned value or the call will be optimized away, preventing benchmark execution
+                            var result = _channel.SendSampleData(recordsToSend);
+                            Console.WriteLine($"Thread {threadId}: Delivery receipt received");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on Send: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
+
+
+                        try
+                        {
+                            ((IClientChannel)channel).Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error on channel close: Thread {threadId}, Invocation: {invocationNumber}");
+                        }
+                    }
+                });
+                tasks.Add(t);
+            }
+            tasks.ForEach(t => t.Start());
             Task.WaitAll(tasks.ToArray());
         }
     }

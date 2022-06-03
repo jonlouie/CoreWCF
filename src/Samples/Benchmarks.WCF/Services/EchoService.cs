@@ -5,27 +5,28 @@ using System.Collections.Generic;
 using Benchmarks.Common.Helpers;
 using Benchmarks.Common.DataContract;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace Benchmarks.WCF.Services
 {
     [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class EchoService : ServiceContract.IEchoService
     {
-        public IEnumerable<SampleData> EchoSampleData(IEnumerable<SampleData> echoData)
+        public async Task<IEnumerable<SampleData>> EchoSampleData(IEnumerable<SampleData> echoData)
         {
-            return echoData;
+            return await Task.FromResult(echoData);
         }
 
         // Client receives data from this endpoint
-        public IEnumerable<SampleData> ReceiveSampleData(int numRecords)
+        public async Task<IEnumerable<SampleData>> ReceiveSampleData(int numRecords)
         {
-            return DataGenerator.GenerateRecords(numRecords);
+            return await Task.FromResult(DataGenerator.GenerateRecords(numRecords));
         }
 
         // Client sends data to this endpoint
-        public bool SendSampleData(IEnumerable<SampleData> echo)
+        public async Task<bool> SendSampleData(IEnumerable<SampleData> echo)
         {
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }

@@ -18,9 +18,9 @@ namespace Benchmarks.Client
             nonBenchmarkCalls.Setup();
 
             Console.WriteLine("Making the call");
-            nonBenchmarkCalls.EchoSampleDataForever(nonBenchmarkCalls.DataList100);
-            nonBenchmarkCalls.ReceiveSampleDataForever(100);
-            nonBenchmarkCalls.SendSampleDataForever(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.EchoSampleDataStress(nonBenchmarkCalls.DataList100);
+            nonBenchmarkCalls.ReceiveSampleDataStress(100);
+            nonBenchmarkCalls.SendSampleDataStress(nonBenchmarkCalls.DataList100);
 
             Console.WriteLine("Cleaning up");
             nonBenchmarkCalls.Cleanup();

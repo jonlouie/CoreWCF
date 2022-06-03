@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Benchmarks.Common.DataContract;
 using CoreWCF;
 
@@ -19,14 +20,14 @@ namespace Benchmarks.CoreWCF.Dev.ServiceContract
     {
         [OperationContract(Name = "EchoSampleData", Action = Constants.OPERATION_BASE + "EchoSampleData",
             ReplyAction = Constants.OPERATION_BASE + "EchoSampleDataResponse")]
-        IEnumerable<SampleData> EchoSampleData(IEnumerable<SampleData> sampleData);
+        Task<IEnumerable<SampleData>> EchoSampleData(IEnumerable<SampleData> sampleData);
 
         [OperationContract(Name = "ReceiveSampleData", Action = Constants.OPERATION_BASE + "ReceiveSampleData",
             ReplyAction = Constants.OPERATION_BASE + "ReceiveSampleDataResponse")]
-        IEnumerable<SampleData> ReceiveSampleData(int numRecords);
+        Task<IEnumerable<SampleData>> ReceiveSampleData(int numRecords);
 
         [OperationContract(Name = "SendSampleData", Action = Constants.OPERATION_BASE + "SendSampleData",
             ReplyAction = Constants.OPERATION_BASE + "SendSampleDataResponse")]
-        bool SendSampleData(IEnumerable<SampleData> echo);
+        Task<bool> SendSampleData(IEnumerable<SampleData> echo);
     }
 }
