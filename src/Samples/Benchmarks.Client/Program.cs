@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Benchmarks.Common.DataContract;
+using System.Linq;
 
 namespace Benchmarks.Client
 {
@@ -12,7 +13,7 @@ namespace Benchmarks.Client
 
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.ToHashSet().Contains("--job"))
             {
                 var summary = BenchmarkRunner.Run(typeof(Program).Assembly);
             }
@@ -25,6 +26,10 @@ namespace Benchmarks.Client
                 Console.WriteLine("Making the call");
                 var command = args[0].ToLower();
                 var size = int.Parse(args[1]);
+                if (!(args.Length > 2 && int.TryParse(args[2], out int invocationsPerThread)))
+                {
+                    invocationsPerThread = 1000;
+                }
 
                 IEnumerable<SampleData> data;
                 if (size == 100)
@@ -43,16 +48,17 @@ namespace Benchmarks.Client
 
                 Console.WriteLine($"Command == {command}");
                 Console.WriteLine($"Data size == {size}");
+                Console.WriteLine($"Invocations per thread == {invocationsPerThread}");
                 switch (command)
                 {
                     case "echo":
-                        nonBenchmarkCalls.EchoSampleDataStress(data);
+                        nonBenchmarkCalls.EchoSampleDataStress(data, invocationsPerThread);
                         break;
                     case "receive":
-                        nonBenchmarkCalls.ReceiveSampleDataStress(size);
+                        nonBenchmarkCalls.ReceiveSampleDataStress(size, invocationsPerThread);
                         break;
                     case "send":
-                        nonBenchmarkCalls.SendSampleDataStress(data);
+                        nonBenchmarkCalls.SendSampleDataStress(data, invocationsPerThread);
                         break;
                     default:
                         Console.WriteLine("Unrecognized arg");
