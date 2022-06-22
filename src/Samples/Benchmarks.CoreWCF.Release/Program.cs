@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using CoreWCF.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Benchmarks.CoreWCF.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace Benchmarks.CoreWCF.Release
 {
@@ -37,6 +38,12 @@ namespace Benchmarks.CoreWCF.Release
             public void ConfigureServices(IServiceCollection services)
             {
                 services.AddServiceModelServices();
+                services.AddLogging(builder =>
+                {
+                    builder.AddFilter("Microsoft", LogLevel.Warning)
+                        .AddFilter("System", LogLevel.Warning)
+                        .AddConsole();
+                });
             }
 
             public void Configure(IApplicationBuilder app)
