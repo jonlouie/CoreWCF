@@ -2,6 +2,7 @@
 using System;
 using System.ServiceModel;
 using Benchmarks.WCF.Services;
+using Benchmarks.Common.Helpers;
 
 namespace Benchmarks.WCF
 {
@@ -14,7 +15,7 @@ namespace Benchmarks.WCF
             _host = new ServiceHost(typeof(EchoService));
             _host.Open();
             Console.WriteLine("Server started! Press Enter to close.");
-            Console.ReadLine();
+            ServerRepl.Start();
             _host.Close();
 
 

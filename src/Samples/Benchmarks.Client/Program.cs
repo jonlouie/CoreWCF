@@ -26,11 +26,20 @@ namespace Benchmarks.Client
                 Console.WriteLine("Making the call");
                 var command = args[0].ToLower();
                 var size = int.Parse(args[1]);
+
+                // Set invocations per thread
                 if (!(args.Length > 2 && int.TryParse(args[2], out int invocationsPerThread)))
                 {
                     invocationsPerThread = 1000;
                 }
 
+                // Set number of threads
+                if (!(args.Length > 3 && int.TryParse(args[3], out int maxThreads)))
+                {
+                    maxThreads = 20;
+                }
+
+                // Set size of message to send
                 IEnumerable<SampleData> data;
                 if (size == 100)
                 {
@@ -49,16 +58,17 @@ namespace Benchmarks.Client
                 Console.WriteLine($"Command == {command}");
                 Console.WriteLine($"Data size == {size}");
                 Console.WriteLine($"Invocations per thread == {invocationsPerThread}");
+                Console.WriteLine($"Max threads == {maxThreads}");
                 switch (command)
                 {
                     case "echo":
-                        nonBenchmarkCalls.EchoSampleDataStress(data, invocationsPerThread);
+                        nonBenchmarkCalls.EchoSampleDataStress(data, invocationsPerThread, maxThreads);
                         break;
                     case "receive":
-                        nonBenchmarkCalls.ReceiveSampleDataStress(size, invocationsPerThread);
+                        nonBenchmarkCalls.ReceiveSampleDataStress(size, invocationsPerThread, maxThreads);
                         break;
                     case "send":
-                        nonBenchmarkCalls.SendSampleDataStress(data, invocationsPerThread);
+                        nonBenchmarkCalls.SendSampleDataStress(data, invocationsPerThread, maxThreads);
                         break;
                     default:
                         Console.WriteLine("Unrecognized arg");

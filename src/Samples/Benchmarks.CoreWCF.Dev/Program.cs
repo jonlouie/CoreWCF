@@ -6,6 +6,7 @@ using CoreWCF.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Benchmarks.CoreWCF.Helpers;
 using Microsoft.Extensions.Logging;
+using Benchmarks.Common.Helpers;
 
 namespace Benchmarks.CoreWCF.Dev
 {
@@ -29,7 +30,7 @@ namespace Benchmarks.CoreWCF.Dev
             {
                 host.Start();
                 Console.WriteLine("Server started! Press Enter to close.");
-                Console.ReadLine();
+                ServerRepl.Start();
             }
         }
 

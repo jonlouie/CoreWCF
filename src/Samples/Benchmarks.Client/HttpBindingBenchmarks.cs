@@ -15,7 +15,7 @@ using Benchmarks.Common.Helpers;
 namespace Benchmarks.Client
 {
     [Config(typeof(HttpBindingBenchmarksConfig))]
-    [SimpleJob(RunStrategy.Monitoring)]
+    [SimpleJob(RunStrategy.Monitoring, invocationCount:1000)]
     public class HttpBindingBenchmarks
     {
         //private const string HostName = "localhost";
