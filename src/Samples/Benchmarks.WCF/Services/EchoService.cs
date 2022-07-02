@@ -12,21 +12,31 @@ namespace Benchmarks.WCF.Services
     [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class EchoService : ServiceContract.IEchoService
     {
+        private const int MaxRequests = 50000;
+        private static int _counter = 0;
+        public static int Counter => _counter;
+
         public async Task<IEnumerable<SampleData>> EchoSampleDataAsync(IEnumerable<SampleData> echoData)
         {
-            return await Task.FromResult(echoData);
+            var result = await Task.FromResult(echoData);
+            CounterService.Increment();
+            return result;
         }
 
         // Client receives data from this endpoint
         public async Task<IEnumerable<SampleData>> ReceiveSampleDataAsync(int numRecords)
         {
-            return await Task.FromResult(DataGenerator.GenerateRecords(numRecords));
+            var result = await Task.FromResult(DataGenerator.GenerateRecords(numRecords));
+            CounterService.Increment();
+            return result;
         }
 
         // Client sends data to this endpoint
         public async Task<bool> SendSampleDataAsync(IEnumerable<SampleData> echo)
         {
-            return await Task.FromResult(true);
+            var result = await Task.FromResult(true);
+            CounterService.Increment();
+            return result;
         }
     }
 }

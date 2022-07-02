@@ -14,19 +14,25 @@ namespace Benchmarks.CoreWCF.Dev.Services
     {
         public async Task<IEnumerable<SampleData>> EchoSampleDataAsync(IEnumerable<SampleData> echoData)
         {
-            return await Task.FromResult(echoData);
+            var result = await Task.FromResult(echoData);
+            CounterService.Increment();
+            return result;
         }
 
         // Client receives data from this endpoint
         public async Task<IEnumerable<SampleData>> ReceiveSampleDataAsync(int numRecords)
         {
-            return await Task.FromResult(DataGenerator.GenerateRecords(numRecords));
+            var result = await Task.FromResult(DataGenerator.GenerateRecords(numRecords));
+            CounterService.Increment();
+            return result;
         }
 
         // Client sends data to this endpoint
         public async Task<bool> SendSampleDataAsync(IEnumerable<SampleData> echo)
         {
-            return await Task.FromResult(true);
+            var result = await Task.FromResult(true);
+            CounterService.Increment();
+            return result;
         }
     }
 }

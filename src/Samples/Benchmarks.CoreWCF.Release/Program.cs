@@ -17,6 +17,8 @@ namespace Benchmarks.CoreWCF.Release
             IWebHost host = WebHost.CreateDefaultBuilder(Array.Empty<string>())
                 .UseKestrel(options =>
                 {
+                    options.Limits.MinRequestBodyDataRate = null;
+                    options.Limits.MinResponseDataRate = null;
                     options.Limits.MaxRequestBufferSize = null;
                     options.Limits.MaxRequestBodySize = null;
                     options.Limits.MaxResponseBufferSize = null;

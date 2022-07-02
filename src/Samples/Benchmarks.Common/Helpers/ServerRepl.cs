@@ -28,13 +28,19 @@ namespace Benchmarks.Common.Helpers
                         Console.WriteLine("Running garbage collector...");
                         GC.Collect();
                         break;
+                    case "s":
+                        Console.WriteLine("Starting counter...");
+                        CounterService.Start();
+                        break;
+                    case "t":
+                        Console.WriteLine("Stopping counter...");
+                        CounterService.Stop();
+                        break;
                     default:
                         break;
                 }
                 Console.WriteLine();
             }
-
         }
-
     }
 }
