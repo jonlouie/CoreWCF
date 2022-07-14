@@ -284,5 +284,7 @@ nbgv.exe
 # JetBrains Rider settings
 .idea
 
+# BenchmarkDotNet results
+BenchmarkDotNet.Artifacts/
 # CoreWCF.Templates.Tests working folder
 TestTemplates/
