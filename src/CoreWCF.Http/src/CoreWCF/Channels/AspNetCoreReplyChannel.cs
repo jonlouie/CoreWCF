@@ -119,7 +119,7 @@ namespace CoreWCF.Channels
                 throw new InvalidOperationException("Channel Dispatcher can't be null");
             }
 
-            var requestContext = HttpRequestContext.CreateContext(_httpSettings, context);
+            using var requestContext = HttpRequestContext.CreateContext(_httpSettings, context);
             await requestContext.ProcessAuthenticationAsync();
             
             HttpInput httpInput = requestContext.GetHttpInput(true);
