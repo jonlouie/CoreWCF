@@ -333,6 +333,7 @@ namespace CoreWCF.Channels
             messageData = EncodeMessage(message);
             await Connection.Output.WriteAsync(messageData, token);
             await Connection.Output.FlushAsync();
+            BufferManager.ReturnBuffer(messageData.Array);
         }
 
         protected override async Task CloseOutputAsync(CancellationToken token)
