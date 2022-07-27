@@ -20,7 +20,8 @@ namespace Benchmarks.Client
     {
         //private const string HostName = "localhost";
         //private const string Port = "8080";
-        private readonly string _benchmarkEndpointAddress = $"http://{Program.HostName}:{Program.Port}/BasicWcfService/basichttp.svc";
+        private string _benchmarkEndpointAddress = $"http://{Program.HostName}:{Program.Port}/BasicWcfService/basichttp.svc";
+        private string _latencyBenchmarkEndpointAddress = $"http://{Program.LinuxHost}:{Program.Port}/BasicWcfService/basichttp.svc";
         private readonly IEnumerable<SampleData> _dataList1 = DataGenerator.GenerateRecords(1);
         private readonly IEnumerable<SampleData> _dataList100 = DataGenerator.GenerateRecords(100);
         private readonly IEnumerable<SampleData> _dataList1000 = DataGenerator.GenerateRecords(1000);

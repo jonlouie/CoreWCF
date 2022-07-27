@@ -8,8 +8,12 @@ namespace Benchmarks.Client
 {
     public class Program
     {
-        public const string HostName = "localhost";
+        public const string WindowsHost = "ec2-35-86-186-181.us-west-2.compute.amazonaws.com";
+        public const string LinuxHost = "ec2-44-227-13-79.us-west-2.compute.amazonaws.com";
+        public const string LinuxArmHost = "ec2-44-233-199-247.us-west-2.compute.amazonaws.com";
+
         public const string Port = "8080";
+        public static string? HostName;
 
         static void Main(string[] args)
         {
@@ -19,8 +23,12 @@ namespace Benchmarks.Client
             }
             else
             {
-                var nonBenchmarkCalls = new NonBenchmarkCalls();
+                // Assign hostname
+                HostName = args[4];
+                Console.WriteLine(HostName);
+
                 Console.WriteLine("Setup");
+                var nonBenchmarkCalls = new NonBenchmarkCalls();
                 nonBenchmarkCalls.Setup();
 
                 Console.WriteLine("Making the call");
