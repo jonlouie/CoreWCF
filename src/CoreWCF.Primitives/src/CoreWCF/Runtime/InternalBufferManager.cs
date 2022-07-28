@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading;
+using CoreWCF.Diagnostics;
 
 namespace CoreWCF.Runtime
 {
@@ -206,7 +207,12 @@ namespace CoreWCF.Runtime
 
                     if (bufferPool.Return(buffer))
                     {
+                        BufferEventSource.Log.BufferReturned(buffer.Length);
                         bufferPool.IncrementCount();
+                    }
+                    else
+                    {
+                        BufferEventSource.Log.BufferReturnFailed(buffer.Length);
                     }
                 }
             }
@@ -222,6 +228,7 @@ namespace CoreWCF.Runtime
                     byte[] buffer = bufferPool.Take();
                     if (buffer != null)
                     {
+                        BufferEventSource.Log.BufferTaken(bufferSize);
                         bufferPool.DecrementCount();
                         returnValue = buffer;
                     }
@@ -229,11 +236,16 @@ namespace CoreWCF.Runtime
                     {
                         if (bufferPool.Peak == bufferPool.Limit)
                         {
+                            BufferEventSource.Log.BufferMiss(bufferSize);
                             bufferPool.Misses++;
                             if (++_totalMisses >= maxMissesBeforeTuning)
                             {
                                 TuneQuotas();
                             }
+                        }
+                        else
+                        {
+                            BufferEventSource.Log.BufferNotFound(bufferSize);
                         }
 
                         //if (TraceCore.BufferPoolAllocationIsEnabled(Fx.Trace))
@@ -246,6 +258,7 @@ namespace CoreWCF.Runtime
                 }
                 else
                 {
+                    BufferEventSource.Log.BufferPoolNotFound(bufferSize);
                     //if (TraceCore.BufferPoolAllocationIsEnabled(Fx.Trace))
                     //{
                     //    TraceCore.BufferPoolAllocation(Fx.Trace, bufferSize);
