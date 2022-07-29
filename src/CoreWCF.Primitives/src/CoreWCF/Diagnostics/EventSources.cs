@@ -5,7 +5,7 @@ using System.Diagnostics.Tracing;
 
 namespace CoreWCF.Diagnostics
 {
-    [EventSource(Name = "Demo")]
+    [EventSource(Name = "BufferEvents")]
     public class BufferEventSource : EventSource
     {
         private class BufferEvent
@@ -20,21 +20,27 @@ namespace CoreWCF.Diagnostics
         public static BufferEventSource Log { get; } = new();
 
         [Event(BufferEvent.Taken)]
-        public void BufferTaken(int bufferSize) => WriteEvent(BufferEvent.Taken, bufferSize);
+        public void BufferTaken(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.Taken, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.Returned)]
-        public void BufferReturned(int bufferSize) => WriteEvent(BufferEvent.Returned, bufferSize);
+        public void BufferReturned(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.Returned, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.Miss)]
-        public void BufferMiss(int bufferSize) => WriteEvent(BufferEvent.Miss, bufferSize);
+        public void BufferMiss(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.Miss, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.NotFound)]
-        public void BufferNotFound(int bufferSize) => WriteEvent(BufferEvent.NotFound, bufferSize);
+        public void BufferNotFound(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.NotFound, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.PoolNotFound)]
-        public void BufferPoolNotFound(int bufferSize) => WriteEvent(BufferEvent.PoolNotFound, bufferSize);
+        public void BufferPoolNotFound(int poolHashCode, int bufferSize)
+            => WriteEvent(BufferEvent.PoolNotFound, poolHashCode, bufferSize);
 
         [Event(BufferEvent.ReturnFailed)]
-        public void BufferReturnFailed(int bufferSize) => WriteEvent(BufferEvent.ReturnFailed, bufferSize);
+        public void BufferReturnFailed(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.ReturnFailed, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
     }
 }
