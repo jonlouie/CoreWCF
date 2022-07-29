@@ -3,22 +3,28 @@
 
 using System;
 using CoreWCF;
+using CoreWCF.Channels;
 
 namespace Benchmarks.CoreWCF.Helpers
 {
     public class ServiceBindingFactory
     {
-        public static BasicHttpBinding GetStandardBasicHttpBinding()
+        public static Binding GetStandardBasicHttpBinding()
         {
-            return new BasicHttpBinding
+            var basicBinding = new BasicHttpBinding
             {
                 SendTimeout = TimeSpan.FromMinutes(20.0),
                 ReceiveTimeout = TimeSpan.FromMinutes(20.0),
                 OpenTimeout = TimeSpan.FromMinutes(20.0),
                 CloseTimeout = TimeSpan.FromMinutes(20.0),
                 MaxBufferSize = int.MaxValue,
-                MaxReceivedMessageSize = int.MaxValue
+                MaxReceivedMessageSize = int.MaxValue,
             };
+            var binding = new CustomBinding(basicBinding);
+            var tbe = binding.Elements.Find<HttpTransportBindingElement>();
+            tbe.MaxBufferPoolSize = int.MaxValue;
+
+            return binding;
         }
     }
 }
