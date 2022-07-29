@@ -128,9 +128,9 @@ namespace CoreWCF.Channels
                 if ((requestMessage == null) && (requestException == null))
                 {
                     throw Fx.Exception.AsError(
-                            new ProtocolException(
-                                SR.MessageXmlProtocolError,
-                                new XmlException(SR.MessageIsEmpty)));
+                        new ProtocolException(
+                            SR.MessageXmlProtocolError,
+                            new XmlException(SR.MessageIsEmpty)));
                 }
 
                 requestContext.SetMessage(requestMessage, requestException);
