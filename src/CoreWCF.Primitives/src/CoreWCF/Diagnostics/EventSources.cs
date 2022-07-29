@@ -28,16 +28,16 @@ namespace CoreWCF.Diagnostics
             => WriteEvent(BufferEvent.Returned, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.Miss)]
-        public void BufferMiss(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
-            => WriteEvent(BufferEvent.Miss, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
+        public void BufferMiss(int poolHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.Miss, poolHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.NotFound)]
-        public void BufferNotFound(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
-            => WriteEvent(BufferEvent.NotFound, poolHashCode, arrayHashCode, bufferSize, bufferPeak, bufferLimit, misses);
+        public void BufferNotFound(int poolHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)
+            => WriteEvent(BufferEvent.NotFound, poolHashCode, bufferSize, bufferPeak, bufferLimit, misses);
 
         [Event(BufferEvent.PoolNotFound)]
-        public void BufferPoolNotFound(int poolHashCode, int bufferSize)
-            => WriteEvent(BufferEvent.PoolNotFound, poolHashCode, bufferSize);
+        public void BufferPoolNotFound(int bufferSize)
+            => WriteEvent(BufferEvent.PoolNotFound, bufferSize);
 
         [Event(BufferEvent.ReturnFailed)]
         public void BufferReturnFailed(int poolHashCode, int arrayHashCode, int bufferSize, int bufferPeak, int bufferLimit, int misses)

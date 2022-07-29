@@ -236,7 +236,7 @@ namespace CoreWCF.Runtime
                     {
                         if (bufferPool.Peak == bufferPool.Limit)
                         {
-                            BufferEventSource.Log.BufferMiss(bufferPool.GetHashCode(), buffer.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                            BufferEventSource.Log.BufferMiss(bufferPool.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                             bufferPool.Misses++;
                             if (++_totalMisses >= maxMissesBeforeTuning)
                             {
@@ -245,7 +245,7 @@ namespace CoreWCF.Runtime
                         }
                         else
                         {
-                            BufferEventSource.Log.BufferNotFound(bufferPool.GetHashCode(), buffer.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                            BufferEventSource.Log.BufferNotFound(bufferPool.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                         }
 
                         //if (TraceCore.BufferPoolAllocationIsEnabled(Fx.Trace))
@@ -258,7 +258,7 @@ namespace CoreWCF.Runtime
                 }
                 else
                 {
-                    BufferEventSource.Log.BufferPoolNotFound(bufferPool.GetHashCode(), bufferSize);
+                    BufferEventSource.Log.BufferPoolNotFound(bufferSize);
                     //if (TraceCore.BufferPoolAllocationIsEnabled(Fx.Trace))
                     //{
                     //    TraceCore.BufferPoolAllocation(Fx.Trace, bufferSize);
