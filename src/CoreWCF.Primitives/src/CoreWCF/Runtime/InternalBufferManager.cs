@@ -207,12 +207,12 @@ namespace CoreWCF.Runtime
 
                     if (bufferPool.Return(buffer))
                     {
-                        BufferEventSource.Log.BufferReturned(bufferPool.GetHashCode(), buffer.GetHashCode(), buffer.Length, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                        //BufferEventSource.Log.BufferReturned(bufferPool.GetHashCode(), buffer.GetHashCode(), buffer.Length, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                         bufferPool.IncrementCount();
                     }
                     else
                     {
-                        BufferEventSource.Log.BufferReturnFailed(bufferPool.GetHashCode(), buffer.GetHashCode(), buffer.Length, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                        //BufferEventSource.Log.BufferReturnFailed(bufferPool.GetHashCode(), buffer.GetHashCode(), buffer.Length, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                     }
                 }
             }
@@ -228,7 +228,7 @@ namespace CoreWCF.Runtime
                     byte[] buffer = bufferPool.Take();
                     if (buffer != null)
                     {
-                        BufferEventSource.Log.BufferTaken(bufferPool.GetHashCode(), buffer.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                        //BufferEventSource.Log.BufferTaken(bufferPool.GetHashCode(), buffer.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                         bufferPool.DecrementCount();
                         returnValue = buffer;
                     }
@@ -236,7 +236,7 @@ namespace CoreWCF.Runtime
                     {
                         if (bufferPool.Peak == bufferPool.Limit)
                         {
-                            BufferEventSource.Log.BufferMiss(bufferPool.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                            //BufferEventSource.Log.BufferMiss(bufferPool.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                             bufferPool.Misses++;
                             if (++_totalMisses >= maxMissesBeforeTuning)
                             {
@@ -245,7 +245,7 @@ namespace CoreWCF.Runtime
                         }
                         else
                         {
-                            BufferEventSource.Log.BufferNotFound(bufferPool.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
+                            //BufferEventSource.Log.BufferNotFound(bufferPool.GetHashCode(), bufferSize, bufferPool.Peak, bufferPool.Limit, bufferPool.Misses);
                         }
 
                         //if (TraceCore.BufferPoolAllocationIsEnabled(Fx.Trace))
@@ -258,7 +258,7 @@ namespace CoreWCF.Runtime
                 }
                 else
                 {
-                    BufferEventSource.Log.BufferPoolNotFound(bufferSize);
+                    //BufferEventSource.Log.BufferPoolNotFound(bufferSize);
                     //if (TraceCore.BufferPoolAllocationIsEnabled(Fx.Trace))
                     //{
                     //    TraceCore.BufferPoolAllocation(Fx.Trace, bufferSize);
