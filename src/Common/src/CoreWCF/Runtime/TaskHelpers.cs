@@ -316,7 +316,6 @@ namespace CoreWCF.Runtime
 
         public static IDisposable RunTaskContinuationsOnOurThreads()
         {
-            return null;
             if (SynchronizationContext.Current == ServiceModelSynchronizationContext.Instance)
             {
                 return null; // No need to save and restore state as we're already using the correct sync context
