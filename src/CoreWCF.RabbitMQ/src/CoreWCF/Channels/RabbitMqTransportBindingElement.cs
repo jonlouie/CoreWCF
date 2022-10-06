@@ -3,6 +3,7 @@
 
 using System;
 using System.Net;
+using CoreWCF.Channels.Configuration;
 using CoreWCF.Configuration;
 using CoreWCF.Queue.Common;
 using CoreWCF.Queue.Common.Configuration;
@@ -12,25 +13,24 @@ namespace CoreWCF.Channels
 {
     public class RabbitMqTransportBindingElement : QueueBaseTransportBindingElement
     {
-        /// <summary>
-        /// Creates a new instance of the RabbitMQTransportBindingElement Class using the default protocol.
-        /// </summary>
         public RabbitMqTransportBindingElement()
         {
         }
-
+        
         private RabbitMqTransportBindingElement(RabbitMqTransportBindingElement other)
         {
+            MaxReceivedMessageSize = other.MaxReceivedMessageSize;
             BrokerProtocol = other.BrokerProtocol;
-            Credentials = other.Credentials;
+            SslOption = other.SslOption;
             VirtualHost = other.VirtualHost;
+            Credentials = other.Credentials;
+            QueueConfiguration = other.QueueConfiguration;
         }
 
         public override BindingElement Clone()
         {
             return new RabbitMqTransportBindingElement(this);
         }
-
 
         public override T GetProperty<T>(BindingContext context)
         {
@@ -51,7 +51,7 @@ namespace CoreWCF.Channels
         {
             var serviceProvider = context.BindingParameters.Find<IServiceProvider>();
             var serviceDispatcher = context.BindingParameters.Find<IServiceDispatcher>();
-            return new RabbitMqTransportPump(serviceProvider, serviceDispatcher);
+            return new RabbitMqTransportPump(serviceProvider, serviceDispatcher, SslOption, QueueConfiguration, Credentials, VirtualHost);
         }
 
         /// <summary>
@@ -68,20 +68,29 @@ namespace CoreWCF.Channels
         public override long MaxReceivedMessageSize { get; set; }
 
         /// <summary>
-        /// The credentials to use when authenticating with the broker
-        /// </summary>
-        internal ICredentials Credentials { get; set; }
-
-        /// <summary>
-        /// Specifies the broker virtual host
-        /// </summary>
-        internal string VirtualHost { get; set; }
-
-        /// <summary>
         /// Specifies the version of the AMQP protocol that should be used to
         /// communicate with the broker
         /// </summary>
         public IProtocol BrokerProtocol { get; set; }
 
+        /// <summary>
+        /// SSL configuration for the RabbitMQ queue
+        /// </summary>
+        public SslOption SslOption { get; set; }
+
+        /// <summary>
+        /// Virtual host for the RabbitMQ queue
+        /// </summary>
+        public string VirtualHost { get; set; }
+
+        /// <summary>
+        /// Credentials used for accessing the RabbitMQ host
+        /// </summary>
+        public ICredentials Credentials { get; set; }
+
+        /// <summary>
+        /// Configuration used for declaring a queue
+        /// </summary>
+        public QueueDeclareConfiguration QueueConfiguration { get; set; }
     }
 }

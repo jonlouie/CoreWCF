@@ -21,6 +21,7 @@ namespace CoreWCF.Channels
         private readonly TimeSpan _queueReceiveTimeOut;
         private readonly IDeadLetterQueueMsmqSender _deadLetterQueueSender;
         private readonly ILogger<MsmqQueueTransport> _logger;
+        public int ConcurrencyLevel => 1;
 
         public MsmqQueueTransport(IServiceDispatcher serviceDispatcher, IServiceProvider serviceProvider)
         {

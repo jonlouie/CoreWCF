@@ -27,11 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Fakes\" />
     <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\rabbitmqTestMessage.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
