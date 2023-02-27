@@ -23,13 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CoreWCF.RabbitMQ.Client\src\CoreWCF.RabbitMQ.Client.csproj" />
     <ProjectReference Include="..\src\CoreWCF.RabbitMQ.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="MessageFiles\rabbitmqTestMessage.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

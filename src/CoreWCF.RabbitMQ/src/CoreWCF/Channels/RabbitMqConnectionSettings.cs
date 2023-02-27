@@ -15,6 +15,7 @@ namespace CoreWCF.Channels
         private const string SecureAMQPScheme = "amqps";
         private const string DefaultVirtualHost = "/";
 
+        public Uri BaseAddress { get; set; }
         public string Host { get; set; }
         public int Port { get; set; }
         public string Exchange { get; set; } = string.Empty;
@@ -36,7 +37,7 @@ namespace CoreWCF.Channels
             {
                 throw new ArgumentException($"Parameter {nameof(uri)} cannot be null.");
             }
-
+            
             sslOption = ConfigureSslOption(sslOption, uri);
             var queueName = GetQueueNameFromUri(uri);
             var exchange = GetExchangeFromUri(uri);
@@ -46,6 +47,7 @@ namespace CoreWCF.Channels
 
             return new RabbitMqConnectionSettings
             {
+                BaseAddress = uri,
                 Host = uri.Host,
                 Port = uri.Port,
                 Exchange = exchange,
