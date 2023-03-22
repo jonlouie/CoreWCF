@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
 using System.Net;
 using CoreWCF.Channels.Configuration;
 using RabbitMQ.Client;
@@ -12,6 +13,7 @@ namespace CoreWCF.Channels
         private RabbitMqTransportBindingElement _transport;
         private TextMessageEncodingBindingElement _textMessageEncodingBindingElement;
         private BinaryMessageEncodingBindingElement _binaryMessageEncodingBindingElement;
+        private RabbitMqMessageEncoding _messageEncoding = RabbitMqMessageEncoding.Text;
 
         public RabbitMqBinding()
         {
@@ -85,7 +87,18 @@ namespace CoreWCF.Channels
         /// </summary>
         public override string Scheme => _transport.Scheme;
 
-        public RabbitMqMessageEncoding MessageEncoding { get; set; } = RabbitMqMessageEncoding.Text;
+        public RabbitMqMessageEncoding MessageEncoding
+        {
+            get { return _messageEncoding; }
+            set
+            {
+                if (!RabbitMqMessageEncodingHelper.IsDefined(value))
+                {
+                    throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentOutOfRangeException(nameof(value)));
+                }
+                _messageEncoding = value;
+            }
+        }
 
         public override BindingElementCollection CreateBindingElements()
         {

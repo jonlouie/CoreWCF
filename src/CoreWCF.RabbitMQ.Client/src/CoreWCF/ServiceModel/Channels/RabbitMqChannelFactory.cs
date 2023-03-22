@@ -1,15 +1,19 @@
-﻿using System.Linq;
-using System;
+﻿using System;
+using System.Linq;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
+using CoreWCF.IdentityModel.Selectors;
+using CoreWCF.Runtime;
+using CoreWCF.Security;
 
 namespace CoreWCF.ServiceModel.Channels
 {
-    public class RabbitMqChannelFactory : ChannelFactoryBase<IOutputChannel>
+    internal class RabbitMqChannelFactory : ChannelFactoryBase<IOutputChannel>
     {
         private BufferManager _bufferManager;
         private MessageEncoderFactory _messageEncoderFactory;
         private RabbitMqTransportBindingElement _transport;
+        private SecurityCredentialsManager _channelCredentials;
 
         internal RabbitMqChannelFactory(RabbitMqTransportBindingElement transport, BindingContext context)
             : base(context.Binding)
@@ -25,12 +29,14 @@ namespace CoreWCF.ServiceModel.Channels
 
             if (messageEncoderBindingElements.Count == 1)
             {
-                _messageEncoderFactory = messageEncoderBindingElements.First().CreateMessageEncoderFactory();
+                _messageEncoderFactory = messageEncoderBindingElements[0].CreateMessageEncoderFactory();
             }
             else
             {
                 _messageEncoderFactory = RabbitMqDefaults.DefaultMessageEncoderFactory;
             }
+
+            _channelCredentials = context.BindingParameters.OfType<SecurityCredentialsManager>().FirstOrDefault();
         }
 
         public RabbitMqTransportBindingElement Transport => _transport;
@@ -66,6 +72,7 @@ namespace CoreWCF.ServiceModel.Channels
 
         protected override void OnEndOpen(IAsyncResult result)
         {
+            result.ToApmEnd();
         }
 
         protected override IOutputChannel OnCreateChannel(System.ServiceModel.EndpointAddress queueUrl, Uri via)
