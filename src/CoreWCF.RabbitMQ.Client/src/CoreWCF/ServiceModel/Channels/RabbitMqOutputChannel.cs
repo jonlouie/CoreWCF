@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
-using CoreWCF.Channels;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace CoreWCF.ServiceModel.Channels
 {
@@ -98,6 +98,10 @@ namespace CoreWCF.ServiceModel.Channels
             }
         }
 
+        /// <summary>
+        /// Published a Message to RabbitMQ and waits for a Publisher confirm. Note that
+        /// waiting for publisher confirms significantly slows down publishing
+        /// </summary>
         public void Send(System.ServiceModel.Channels.Message message)
         {
             var messageBuffer = EncodeMessage(message);
@@ -116,9 +120,33 @@ namespace CoreWCF.ServiceModel.Channels
             }
         }
 
+        /// <summary>
+        /// Published a Message to RabbitMQ and waits for a Publisher confirm. Note that
+        /// waiting for publisher confirms significantly slows down publishing
+        /// </summary>
+        /// <exception cref="TimeoutException"></exception>
         public void Send(System.ServiceModel.Channels.Message message, TimeSpan timeout)
         {
-            Send(message);
+            var messageBuffer = EncodeMessage(message);
+
+            try
+            {
+                _rabbitMqClient.ConfirmSelect();
+                _rabbitMqClient.BasicPublish(
+                    exchange: _connectionSettings.Exchange,
+                    routingKey: _connectionSettings.RoutingKey,
+                    body: messageBuffer);
+                _rabbitMqClient.WaitForConfirmsOrDie(timeout);
+            }
+            catch (OperationInterruptedException e)
+            {
+                throw new TimeoutException("Send message timeout exceeded.", e);
+            }
+            finally
+            {
+                // Make sure buffers are always returned to the BufferManager
+                _parent.BufferManager.ReturnBuffer(messageBuffer.Array);
+            }
         }
 
         public IAsyncResult BeginSend(System.ServiceModel.Channels.Message message, AsyncCallback callback, object state)
