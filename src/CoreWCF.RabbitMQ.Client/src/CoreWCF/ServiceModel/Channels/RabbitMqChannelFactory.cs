@@ -2,7 +2,6 @@
 using System.Linq;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
-using CoreWCF.IdentityModel.Selectors;
 using CoreWCF.Runtime;
 using CoreWCF.Security;
 

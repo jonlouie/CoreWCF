@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
@@ -6,20 +9,20 @@ using RabbitMQ.Client.Exceptions;
 
 namespace CoreWCF.ServiceModel.Channels
 {
-    public class RabbitMqOutputChannel : ChannelBase, System.ServiceModel.Channels.IOutputChannel
+    public class RabbitMqOutputChannel : ChannelBase, IOutputChannel
     {
         private RabbitMqChannelFactory _parent;
         private RabbitMqConnectionSettings _connectionSettings;
         private System.ServiceModel.EndpointAddress _baseAddress;
         private Uri _via;
-        private System.ServiceModel.Channels.MessageEncoder _encoder;
+        private MessageEncoder _encoder;
         private IModel _rabbitMqClient;
 
         internal RabbitMqOutputChannel(
             RabbitMqChannelFactory factory,
             IModel rabbitMqClient,
             RabbitMqConnectionSettings connectionSettings,
-            System.ServiceModel.Channels.MessageEncoder encoder)
+            MessageEncoder encoder)
             : base(factory)
         {
             _parent = factory;
@@ -30,13 +33,13 @@ namespace CoreWCF.ServiceModel.Channels
             _baseAddress = new System.ServiceModel.EndpointAddress(_via);
         }
 
-        System.ServiceModel.EndpointAddress System.ServiceModel.Channels.IOutputChannel.RemoteAddress => _baseAddress;
+        System.ServiceModel.EndpointAddress IOutputChannel.RemoteAddress => _baseAddress;
 
-        Uri System.ServiceModel.Channels.IOutputChannel.Via => _via;
+        Uri IOutputChannel.Via => _via;
 
         public override T GetProperty<T>()
         {
-            if (typeof(T) == typeof(System.ServiceModel.Channels.IOutputChannel))
+            if (typeof(T) == typeof(IOutputChannel))
             {
                 return (T)(object)this;
             }
@@ -81,7 +84,7 @@ namespace CoreWCF.ServiceModel.Channels
         /// <summary>
         /// Address the Message and serialize it into a byte array.
         /// </summary>
-        private ArraySegment<byte> EncodeMessage(System.ServiceModel.Channels.Message message)
+        private ArraySegment<byte> EncodeMessage(Message message)
         {
             try
             {
@@ -102,7 +105,7 @@ namespace CoreWCF.ServiceModel.Channels
         /// Published a Message to RabbitMQ and waits for a Publisher confirm. Note that
         /// waiting for publisher confirms significantly slows down publishing
         /// </summary>
-        public void Send(System.ServiceModel.Channels.Message message)
+        public void Send(Message message)
         {
             var messageBuffer = EncodeMessage(message);
 
@@ -125,7 +128,7 @@ namespace CoreWCF.ServiceModel.Channels
         /// waiting for publisher confirms significantly slows down publishing
         /// </summary>
         /// <exception cref="TimeoutException"></exception>
-        public void Send(System.ServiceModel.Channels.Message message, TimeSpan timeout)
+        public void Send(Message message, TimeSpan timeout)
         {
             var messageBuffer = EncodeMessage(message);
 
@@ -149,10 +152,10 @@ namespace CoreWCF.ServiceModel.Channels
             }
         }
 
-        public IAsyncResult BeginSend(System.ServiceModel.Channels.Message message, AsyncCallback callback, object state)
+        public IAsyncResult BeginSend(Message message, AsyncCallback callback, object state)
         { return Task.CompletedTask; }
 
-        public IAsyncResult BeginSend(System.ServiceModel.Channels.Message message, TimeSpan timeout, AsyncCallback callback, object state)
+        public IAsyncResult BeginSend(Message message, TimeSpan timeout, AsyncCallback callback, object state)
         { return BeginSend(message, callback, state); }
 
         public void EndSend(IAsyncResult result)

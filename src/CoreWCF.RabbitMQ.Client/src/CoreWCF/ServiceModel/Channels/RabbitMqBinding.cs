@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using CoreWCF.Channels;
 using RabbitMQ.Client;
 using BinaryMessageEncodingBindingElement = System.ServiceModel.Channels.BinaryMessageEncodingBindingElement;
 using Binding = System.ServiceModel.Channels.Binding;
